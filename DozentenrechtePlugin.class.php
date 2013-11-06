@@ -31,6 +31,10 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
         $subnavigation = new AutoNavigation(_('Neuer Antrag'));
         $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/new'));
         $navigation->addSubNavigation('new', $subnavigation);
+
+        $subnavigation = new AutoNavigation(_('Suche'));
+        $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
+        $navigation->addSubNavigation('search', $subnavigation);
     }
 
     public function initialize() {

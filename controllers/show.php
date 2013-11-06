@@ -66,6 +66,26 @@ class ShowController extends StudipController {
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
     }
 
+    public function search_action() {
+        $sql = "SELECT d.* FROM dozentenrechte d
+            JOIN auth_user_md5 a ON (for_id = user_id) 
+            JOIN Institute i ON (d.institute_id = i.Institut_id) 
+            WHERE a.username LIKE :input 
+            OR a.vorname LIKE :input 
+            OR a.nachname LIKE :input 
+            OR CONCAT(a.vorname, ' ',a.nachname) LIKE :input 
+            OR i.name LIKE :input
+            LIMIT 50";
+        $statement = DBManager::get()->prepare($sql);
+        $search = "%".Request::get('search')."%";
+        $statement->bindParam(':input', $search);
+        $statement->execute();
+        while ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $rights[] = Dozentenrecht::import($result);
+        }
+        $this->rights = SimpleCollection::createFromArray($rights);
+    }
+
     // customized #url_for for plugins
     function url_for($to) {
         $args = func_get_args();
