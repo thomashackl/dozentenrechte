@@ -15,15 +15,13 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
     public function __construct() {
         parent::__construct();
 
+        $toolnavi = Navigation::getItem('tools');
         $navigation = new AutoNavigation(_('Dozentenrechte'));
         $navigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
-        $navigation->setImage(Assets::image_path('blank.gif'));
-        Navigation::addItem('/dozentenrechteplugin', $navigation);
+        Navigation::addItem('tools/dozentenrechteplugin', $navigation);
     }
 
     public function initialize () {
-
-    
         PageLayout::addStylesheet($this->getPluginURL().'/assets/style.css');
         PageLayout::addScript($this->getPluginURL().'/assets/application.js');
     }

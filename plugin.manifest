@@ -4,5 +4,5 @@ origin=intelec
 version=0.1a
 description=Automatische Anträge von Dozenten
 studipMinVersion=2.2
-dbscheme=install.sql
-uninstalldbscheme=uninstall.sql
+dbscheme=db/install.sql
+uninstalldbscheme=db/uninstall.sql
