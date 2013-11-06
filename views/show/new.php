@@ -17,7 +17,7 @@
             <label>
                 <input type="radio" name="from_type" value="1" <?= Request::get('from_type') ? "CHECKED" : "";?>>
                 <?= _('Ab Datum') ?>
-                <input type="text" placeholder="<?= _('Datum') ?>" class="datepicker" />
+                <input name="from" type="text" placeholder="<?= _('Datum') ?>" class="datepicker" value="<?= Request::get('from') ?>"/>
             </label>
         </fieldset>
         <fieldset><legend><?= _('Bis') ?></legend>
@@ -28,7 +28,7 @@
             <label>
                 <input type="radio" name="to_type" value="1" <?= Request::get('to_type') ? "CHECKED" : "";?>>
                 <?= _('Bis Datum') ?>
-                <input type="text" placeholder="<?= _('Datum') ?>" class="datepicker" />
+                <input name="to" type="text" placeholder="<?= _('Datum') ?>" value="<?= Request::get('to') ?>" class="datepicker" />
             </label>
         </fieldset>
     </fieldset>

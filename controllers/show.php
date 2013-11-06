@@ -7,32 +7,37 @@ class ShowController extends StudipController {
     }
 
     public function index_action() {
-        $this->rights = Dozentenrecht::findByFor_id($GLOBALS['user']->id);
+        $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFor_id($GLOBALS['user']->id));
     }
 
     public function new_action() {
         if (Request::submitted('save')) {
-            
+
             //security checks
-            if (!Request::submitted('user')) {
+            if (!Request::get('user')) {
                 $errorStack[] = _('Benutzername angeben');
             }
-            if (!Request::submitted('inst')) {
+            if (!Request::get('inst')) {
                 $errorStack[] = _('Einrichtung angeben');
             } else if (!$GLOBALS['perm']->have_perm('root') && !$GLOBALS['perm']->have_studip_perm(Request::get('inst'), 'dozent')) {
                 $inst = new Institute(Request::get('inst'));
                 $errorStack[] = _('Sie haben keine Berechtigung an der Einrichtung') . ' ' . $inst->name . ' ' . _('Dozentenrechte zu beantragen');
             }
-            if (Request::get('from_type') == 2 && !Request::submitted('from')) {
+            if (Request::get('from_type') && !Request::get('from')) {
                 $errorStack[] = _('Bitte wählen sie den Beginn des Antrags aus');
             }
-            if (Request::get('to_type') == 2 && !Request::submitted('to')) {
+            if (Request::get('to_type') && !Request::get('to')) {
                 $errorStack[] = _('Bitte wählen sie das Ende des Antrags aus');
+            }
+            if (strtotime(Request::get('from')) > strtotime(Request::get('to'))) {
+                $errorStack[] = _('Enddatum liegt vor Beginndatum');
+            }
+            if (Request::get('to') && strtotime(Request::get('to')) < time()) {
+                $errorStack[] = _('Antrag liegt in der Vergangenheit');
             }
             if ($errorStack) {
                 $this->msg = MessageBox::error(_('Bitte überprüfen sie ihren Antrag'), $errorStack);
             } else {
-                
                 // set rights
                 $right = new Dozentenrecht();
                 $right->from_id = $GLOBALS['user']->id;
@@ -40,18 +45,25 @@ class ShowController extends StudipController {
                 $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;
                 $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
                 $right->institute_id = Request::get('inst');
-                
+
                 // if a root user puts a request it is automaticly verified
                 if ($GLOBALS['perm']->have_perm('root')) {
                     $right->verify = 1;
                 }
                 $right->store();
+                $this->redirect('show/given');
             }
         }
     }
 
     public function given_action() {
-        $this->rights = Dozentenrecht::findByFrom_id($GLOBALS['user']->id);
+        if (Request::submitted('reject')) {
+            $right = new Dozentenrecht(Request::get('reject'));
+            if ($GLOBALS['perm']->have_perm('root') || $right->from_id == $GLOBALS['user']->id) {
+                $right->delete();
+            }
+        }
+        $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
     }
 
     // customized #url_for for plugins
