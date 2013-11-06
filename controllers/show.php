@@ -9,9 +9,15 @@ class ShowController extends StudipController {
     }
 
     public function index_action() {
-
-		$this->answer = 'Yes';
-
+        $this->rights = Dozentenrecht::findByFor_id($GLOBALS['user']->id);
+    }
+    
+    public function new_action() {
+        
+    }
+    
+    public function given_action() {
+        
     }
 
     // customized #url_for for plugins
