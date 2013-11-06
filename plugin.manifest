@@ -1,0 +1,8 @@
+pluginname=Dozentenrechte
+pluginclassname=DozentenrechtePlugin
+origin=intelec
+version=0.1a
+description=Automatische Anträge von Dozenten
+studipMinVersion=2.2
+dbscheme=install.sql
+uninstalldbscheme=uninstall.sql
