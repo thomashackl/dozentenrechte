@@ -12,6 +12,11 @@
  */
 class Dozentenrecht extends SimpleORMap {
 
+    const NOT_STARTED = 0;
+    const STARTED = 1;
+    const NOTIFIED = 2;
+    const FINISHED = 3;
+
     public function __construct($id = null) {
         $this->db_table = 'dozentenrechte';
         $this->has_one['user'] = array(
@@ -33,6 +38,10 @@ class Dozentenrecht extends SimpleORMap {
         parent::__construct($id);
     }
 
+    public static function getUnfinished() {
+        self::findBySQL('status < ?', array(self::FINISHED));
+    }
+
     public function work() {
         if ($this->verify) {
             if ($this->end < time()) {
@@ -52,20 +61,26 @@ class Dozentenrecht extends SimpleORMap {
         $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
         $instMember->inst_perms = 'dozent';
         $instMember->store();
+        $this->status = self::STARTED;
+        $this->store();
     }
 
     private function revoke() {
-        $instMember = new InstituteMember(array('for_id', 'institute_id'));
-        $instMember->inst_perms = 'autor';
-        $instMember->store();
-        if (!InstituteMember::countBySql('user_id = ?', array($this->for_id))) {
-            $this->user->perms = 'autor';
-            $this->user->store();
+        if ($this->isLongestRunning()) {
+            $instMember = new InstituteMember(array('for_id', 'institute_id'));
+            $instMember->inst_perms = 'autor';
+            $instMember->store();
+            if (!InstituteMember::countBySql('user_id = ?', array($this->for_id))) {
+                $this->user->perms = 'autor';
+                $this->user->store();
+            }
         }
+        $this->status = self::FINISHED;
+        $this->store();
     }
 
     private function notify() {
-        if (!$this->notify) {
+        if ($this->status == self::STARTED) {
             $msg = new messaging();
 
             // message for the expiring user
@@ -77,10 +92,14 @@ class Dozentenrecht extends SimpleORMap {
             $message = _('Ein von Ihnen gestellter Dozentenrechteantrag endet in Kürze');
             PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $message);
             $msg->insert_message($message, get_username($this->from_id), "____%system%____", FALSE, FALSE, "1", FALSE, _("Systemnachricht:") . " " . _("Dozentenrechte"), TRUE);
-            
-            $this->notify = 1;
+
+            $this->status = self::NOTIFIED;
             $this->store();
         }
+    }
+    
+    private function isLongestRunning() {
+        return !self::countBySql('for_id = ? and end > ?', array($this->for_id, $this->end));
     }
 
 }
