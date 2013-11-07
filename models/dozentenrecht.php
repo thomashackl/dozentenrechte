@@ -42,7 +42,12 @@ class Dozentenrecht extends SimpleORMap {
     }
 
     public static function getUnfinished() {
-        self::findBySQL('status < ?', array(self::FINISHED));
+        return SimpleORMapCollection::createFromArray(self::findBySQL('status < ?', array(self::FINISHED)));
+    }
+    
+    public static function update() {
+        $rights = self::getUnfinished();
+        $rights->sendMessage('work');
     }
 
     public function getStatusMessage() {
@@ -130,7 +135,7 @@ class Dozentenrecht extends SimpleORMap {
     }
 
     private function isLongestRunning() {
-        return !self::countBySql('for_id = ? and end > ?', array($this->for_id, $this->end));
+        return !self::countBySql('for_id = ? AND end > ? AND status = ?', array($this->for_id, $this->end, self::STARTED));
     }
 
 }
