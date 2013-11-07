@@ -21,7 +21,7 @@ class ShowController extends StudipController {
                 $errorStack[] = _('Einrichtung angeben');
             } else if (!$GLOBALS['perm']->have_perm('root') && !$GLOBALS['perm']->have_studip_perm('dozent', Request::get('inst'))) {
                 $inst = new Institute(Request::get('inst'));
-                $errorStack[] = _('Sie haben keine Berechtigung an der Einrichtung') . ' ' . $inst->name .Request::get('inst'). ' ' . _('Dozentenrechte zu beantragen');
+                $errorStack[] = _('Sie haben keine Berechtigung an der Einrichtung') . ' ' . _('Dozentenrechte zu beantragen');
             }
             if (Request::get('from_type') && !Request::get('from')) {
                 $errorStack[] = _('Bitte wählen sie den Beginn des Antrags aus');
@@ -69,11 +69,10 @@ class ShowController extends StudipController {
     public function accept_action() {
         $GLOBALS['perm']->check('root');
         if (Request::submitted('accept')) {
-            foreach (Request::getArray('verify') as $key => $val) {
-                $keys[] = "'$key'";
-            }
-            $in = join(', ', $keys);
-            DBManager::get()->query("UPDATE dozentenrechte SET verify = 1 WHERE id IN ($in)");
+            $rights = SimpleORMapCollection::createFromArray(Dozentenrecht::findMany(array_keys(Request::getArray('verify'))));
+            $rights->sendMessage('setValue', array('verify', 1));
+            $rights->sendMessage('work');
+            $rights->sendMessage('store');
         }
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByVerify(0));
     }

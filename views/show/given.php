@@ -19,9 +19,9 @@
                 <? foreach ($rights->orderBy('mkdate desc') as $right): ?>
                     <tr>
                         <td><?= htmlReady($right->user->getFullname()) ?></td>
-                        <td><?= htmlReady($right->institute->name) ?> <?= htmlReady($right->member->id) ?></td>
+                        <td><?= htmlReady($right->institute->name) ?></td>
                         <td><?= $right->begin ? date('d.m.Y', $right->begin) : _('Unbegrenzt'); ?></td>
-                        <td><?= $right->end == PHP_INT_MAX ? date('d.m.Y', $right->end) : _('Unbegrenzt'); ?></td>
+                        <td><?= $right->end == PHP_INT_MAX ? _('Unbegrenzt') : date('d.m.Y', $right->end) ?></td>
                         <td><?= date('d.m.Y', $right->mkdate) ?></td>
                         <td><?= $right->verify ? _('Bestätigt') : _('Wartend') ?></td>
                         <td>
