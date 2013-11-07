@@ -25,9 +25,9 @@
                             <?= htmlReady($right->user->getFullname()) ?> (<?= htmlReady($right->user->username) ?>)
                         </td>
                         <td><?= htmlReady($right->institute->name) ?></td>
-                        <td><?= $right->begin ? date('d.m.Y', $right->begin) : _('Unbegrenzt'); ?></td>
-                        <td><?= $right->end == PHP_INT_MAX ? date('d.m.Y', $right->end) : _('Unbegrenzt'); ?></td>
-                        <td><?= date('d.m.Y', $right->mkdate) ?></td>
+                        <td><?= $right->getBeginMessage() ?></td>
+                        <td><?= $right->getEndMessage() ?></td>
+                        <td><?= $right->getRequestDate() ?></td>
                         <td><input type="checkbox" name="verify[<?= $right->id ?>]" checked></td>
                     </tr>
                 <? endforeach; ?>

@@ -16,6 +16,9 @@ class Dozentenrecht extends SimpleORMap {
     const STARTED = 1;
     const NOTIFIED = 2;
     const FINISHED = 3;
+    
+    // notify 7 days before end
+    const TIME_TO_NOTIFY = 604800;
 
     public function __construct($id = null) {
         $this->db_table = 'dozentenrechte';
@@ -42,13 +45,41 @@ class Dozentenrecht extends SimpleORMap {
         self::findBySQL('status < ?', array(self::FINISHED));
     }
 
+    public function getStatusMessage() {
+        if (!$this->verify) {
+            return _('Wartend');
+        }
+        switch ($this->status) {
+            case self::NOT_STARTED:
+                return _('Bestätigt');
+            case self::STARTED:
+                return _('Läuft');
+            case self::NOTIFIED:
+                return _('Auslaufend');
+            case self::FINISHED:
+                return _('Beendet');
+        }
+    }
+    
+    public function getEndMessage($style = 'd.m.Y') {
+        return $this->end == PHP_INT_MAX ? _('Unbegrenzt') : date($style, $this->end);
+    }
+    
+    public function getBeginMessage($style = 'd.m.Y') {
+        return $this->begin ? date($style, $right->begin) : _('Unbegrenzt');
+    }
+    
+    public function getRequestDate($style = 'd.m.Y') {
+        return date($style, $this->mkdate);
+    }
+
     public function work() {
         if ($this->verify) {
             if ($this->end < time()) {
                 $this->revoke();
             } else if ($this->begin < time()) {
                 $this->grant();
-                if ($this->end - 7 * 24 * 60 * 60 < time()) {
+                if ($this->end - self::TIME_TO_NOTIFY < time()) {
                     $this->notify();
                 }
             }
@@ -97,7 +128,7 @@ class Dozentenrecht extends SimpleORMap {
             $this->store();
         }
     }
-    
+
     private function isLongestRunning() {
         return !self::countBySql('for_id = ? and end > ?', array($this->for_id, $this->end));
     }
