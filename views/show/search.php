@@ -35,7 +35,11 @@
                         <td><?= $right->getRequestDate() ?></td>
                         <td><?= $right->getStatusMessage() ?></td>
                         <td>
-                            <?= !$right->verify  ? \Studip\Button::create(_('Antrag löschen'), 'reject', array('value' => $right->id)) : "" ?>
+                            <?= !$right->verify 
+                                ? \Studip\Button::create(_('Antrag löschen'), 'reject', array('value' => $right->id)) 
+                                : $right->status < Dozentenrecht::FINISHED 
+                                    ? \Studip\Button::create(_('Beenden'), 'end', array('value' => $right->id)) 
+                                    : "" ?>
                         </td>
                     </tr>
                 <? endforeach; ?>

@@ -74,7 +74,7 @@ class Dozentenrecht extends SimpleORMap {
     }
 
     public function work() {
-        if ($this->verify) {
+        if ($this->verify && $this->status != self::FINISHED) {
             if ($this->end < time()) {
                 $this->revoke();
             } else if ($this->begin < time()) {
@@ -96,12 +96,12 @@ class Dozentenrecht extends SimpleORMap {
         $this->store();
     }
 
-    private function revoke() {
+    public function revoke() {
         if ($this->isLongestRunning()) {
-            $instMember = new InstituteMember(array('for_id', 'institute_id'));
+            $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
             $instMember->inst_perms = 'autor';
             $instMember->store();
-            if (!InstituteMember::countBySql('user_id = ?', array($this->for_id))) {
+            if (!InstituteMember::countBySql('user_id = ? AND inst_perms = ?', array($this->for_id, 'dozent'))) {
                 $this->user->perms = 'autor';
                 $this->user->store();
             }

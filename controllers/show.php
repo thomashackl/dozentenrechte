@@ -57,15 +57,10 @@ class ShowController extends StudipController {
     }
 
     public function given_action() {
-        if (Request::submitted('reject')) {
-            $right = new Dozentenrecht(Request::get('reject'));
-            if ($GLOBALS['perm']->have_perm('root') || $right->from_id == $GLOBALS['user']->id) {
-                $right->delete();
-            }
-        }
+        $this->checkRejected();
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
     }
-    
+
     public function accept_action() {
         $GLOBALS['perm']->check('root');
         if (Request::submitted('accept')) {
@@ -79,6 +74,7 @@ class ShowController extends StudipController {
 
     public function search_action() {
         $GLOBALS['perm']->check('root');
+        $this->checkEnded();
         $sql = "SELECT d.* FROM dozentenrechte d
             JOIN auth_user_md5 a ON (for_id = user_id) 
             JOIN Institute i ON (d.institute_id = i.Institut_id) 
@@ -89,7 +85,7 @@ class ShowController extends StudipController {
             OR i.name LIKE :input
             LIMIT 50";
         $statement = DBManager::get()->prepare($sql);
-        $search = "%".Request::get('search')."%";
+        $search = "%" . Request::get('search') . "%";
         $statement->bindParam(':input', $search);
         $statement->execute();
         while ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -113,6 +109,22 @@ class ShowController extends StudipController {
         $args[0] = $to;
 
         return PluginEngine::getURL($this->dispatcher->plugin, $params, join("/", $args));
+    }
+
+    private function checkRejected() {
+        if (Request::submitted('reject')) {
+            $right = new Dozentenrecht(Request::get('reject'));
+            if ($GLOBALS['perm']->have_perm('root') || $right->from_id == $GLOBALS['user']->id) {
+                $right->delete();
+            }
+        }
+    }
+
+    private function checkEnded() {
+        if (Request::submitted('end')) {
+            $right = new Dozentenrecht(Request::get('end'));
+            $right->revoke();
+        }
     }
 
 }
