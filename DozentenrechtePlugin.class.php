@@ -15,11 +15,20 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
     public function __construct() {
         parent::__construct();
 
-        $toolnavi = Navigation::getItem('tools');
-        $navigation = new AutoNavigation(_('Dozentenrechte'));
-        $navigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
-        Navigation::addItem('tools/dozentenrechteplugin', $navigation);
+        if ($GLOBALS['perm']->have_perm('dozent')) {
+            $navigation = new AutoNavigation(_('Dozentenrechte'));
+            if ($GLOBALS['perm']->have_perm('root')) {
+                $navigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
+            } else {
+                $navigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
+            }
+            Navigation::addItem('tools/dozentenrechteplugin', $navigation);
+        }
+    }
 
+    public function initialize() {
+        $navigation = Navigation::getItem('tools/dozentenrechteplugin');
+        
         if ($GLOBALS['perm']->have_perm('root')) {
             $subnavigation = new AutoNavigation(_('Anträge bestätigen'));
             $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
@@ -43,9 +52,7 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
             $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
             $navigation->addSubNavigation('search', $subnavigation);
         }
-    }
 
-    public function initialize() {
         PageLayout::addStylesheet($this->getPluginURL() . '/assets/style.css');
         PageLayout::addScript($this->getPluginURL() . '/assets/application.js');
     }

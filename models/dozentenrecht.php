@@ -23,21 +23,17 @@ class Dozentenrecht extends SimpleORMap {
 
     public function __construct($id = null) {
         $this->db_table = 'dozentenrechte';
-        $this->has_one['user'] = array(
+        $this->belongs_to['user'] = array(
             'class_name' => 'User',
             'foreign_key' => 'for_id'
         );
-        $this->has_one['owner'] = array(
+        $this->belongs_to['owner'] = array(
             'class_name' => 'User',
             'foreign_key' => 'from_id'
         );
-        $this->has_one['institute'] = array(
+        $this->belongs_to['institute'] = array(
             'class_name' => 'Institute',
             'foreign_key' => 'institute_id'
-        );
-        $this->has_one['member'] = array(
-            'class_name' => 'InstituteMember',
-            'foreign_key' => array('for_id', 'institute_id')
         );
         parent::__construct($id);
     }

@@ -3,6 +3,7 @@
 class ShowController extends StudipController {
 
     public function before_filter(&$action, &$args) {
+        $GLOBALS['perm']->check('dozent');
         $this->set_layout($GLOBALS['template_factory']->open('layouts/base_without_infobox'));
     }
 
@@ -65,7 +66,7 @@ class ShowController extends StudipController {
         $GLOBALS['perm']->check('root');
         if (Request::submitted('accept')) {
             $rights = SimpleORMapCollection::createFromArray(Dozentenrecht::findMany(array_keys(Request::getArray('verify'))));
-            $rights->sendMessage('verify');
+            $rights->verify();
         }
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByVerify(0));
     }
