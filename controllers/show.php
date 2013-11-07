@@ -45,12 +45,12 @@ class ShowController extends StudipController {
                 $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;
                 $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
                 $right->institute_id = Request::get('inst');
-
+                $right->store();
+                
                 // if a root user puts a request it is automaticly verified
                 if ($GLOBALS['perm']->have_perm('root')) {
-                    $right->verify = 1;
+                    $right->verify();
                 }
-                $right->store();
                 $this->redirect('show/given');
             }
         }
@@ -65,9 +65,7 @@ class ShowController extends StudipController {
         $GLOBALS['perm']->check('root');
         if (Request::submitted('accept')) {
             $rights = SimpleORMapCollection::createFromArray(Dozentenrecht::findMany(array_keys(Request::getArray('verify'))));
-            $rights->sendMessage('setValue', array('verify', 1));
-            $rights->sendMessage('work');
-            $rights->sendMessage('store');
+            $rights->sendMessage('verify');
         }
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByVerify(0));
     }

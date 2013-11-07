@@ -19,6 +19,7 @@ class Dozentenrecht extends SimpleORMap {
     
     // notify 7 days before end
     const TIME_TO_NOTIFY = 604800;
+    const INFINITY = 2147483647;
 
     public function __construct($id = null) {
         $this->db_table = 'dozentenrechte';
@@ -66,12 +67,18 @@ class Dozentenrecht extends SimpleORMap {
         }
     }
     
+    public function verify($to = TRUE) {
+        $this->verify = (int) $to;
+        $this->work();
+        $this->store();
+    }
+    
     public function getEndMessage($style = 'd.m.Y') {
-        return $this->end == PHP_INT_MAX ? _('Unbegrenzt') : date($style, $this->end);
+        return $this->end >= self::INFINITY ? _('Unbegrenzt') : date($style, $this->end);
     }
     
     public function getBeginMessage($style = 'd.m.Y') {
-        return $this->begin ? date($style, $right->begin) : _('Unbegrenzt');
+        return $this->begin ? date($style, $this->begin) : _('Unbegrenzt');
     }
     
     public function getRequestDate($style = 'd.m.Y') {
@@ -106,7 +113,8 @@ class Dozentenrecht extends SimpleORMap {
             $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
             $instMember->inst_perms = 'autor';
             $instMember->store();
-            if (!InstituteMember::countBySql('user_id = ? AND inst_perms = ?', array($this->for_id, 'dozent'))) {
+            if (!InstituteMember::countBySql('user_id = ? AND inst_perms = ?', array($this->for_id, 'dozent'))
+                    && !CourseMember::countBySql('user_id = ? AND status = ?', array($this->for_id, 'dozent'))) {
                 $this->user->perms = 'autor';
                 $this->user->store();
             }
