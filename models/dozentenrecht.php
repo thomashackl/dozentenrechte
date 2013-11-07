@@ -18,6 +18,10 @@ class Dozentenrecht extends SimpleORMap {
             'class_name' => 'User',
             'foreign_key' => 'for_id'
         );
+        $this->has_one['owner'] = array(
+            'class_name' => 'User',
+            'foreign_key' => 'from_id'
+        );
         $this->has_one['institute'] = array(
             'class_name' => 'Institute',
             'foreign_key' => 'institute_id'

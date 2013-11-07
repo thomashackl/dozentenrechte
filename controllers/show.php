@@ -19,9 +19,9 @@ class ShowController extends StudipController {
             }
             if (!Request::get('inst')) {
                 $errorStack[] = _('Einrichtung angeben');
-            } else if (!$GLOBALS['perm']->have_perm('root') && !$GLOBALS['perm']->have_studip_perm(Request::get('inst'), 'dozent')) {
+            } else if (!$GLOBALS['perm']->have_perm('root') && !$GLOBALS['perm']->have_studip_perm('dozent', Request::get('inst'))) {
                 $inst = new Institute(Request::get('inst'));
-                $errorStack[] = _('Sie haben keine Berechtigung an der Einrichtung') . ' ' . $inst->name . ' ' . _('Dozentenrechte zu beantragen');
+                $errorStack[] = _('Sie haben keine Berechtigung an der Einrichtung') . ' ' . $inst->name .Request::get('inst'). ' ' . _('Dozentenrechte zu beantragen');
             }
             if (Request::get('from_type') && !Request::get('from')) {
                 $errorStack[] = _('Bitte wählen sie den Beginn des Antrags aus');
@@ -65,8 +65,21 @@ class ShowController extends StudipController {
         }
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
     }
+    
+    public function accept_action() {
+        $GLOBALS['perm']->check('root');
+        if (Request::submitted('accept')) {
+            foreach (Request::getArray('verify') as $key => $val) {
+                $keys[] = "'$key'";
+            }
+            $in = join(', ', $keys);
+            DBManager::get()->query("UPDATE dozentenrechte SET verify = 1 WHERE id IN ($in)");
+        }
+        $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByVerify(0));
+    }
 
     public function search_action() {
+        $GLOBALS['perm']->check('root');
         $sql = "SELECT d.* FROM dozentenrechte d
             JOIN auth_user_md5 a ON (for_id = user_id) 
             JOIN Institute i ON (d.institute_id = i.Institut_id) 

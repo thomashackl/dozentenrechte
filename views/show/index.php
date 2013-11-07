@@ -6,7 +6,7 @@
             </caption>
             <thead>
                 <tr>
-                    <th><?= _('Benutzer') ?></th>
+                    <th><?= _('Gestellt von') ?></th>
                     <th><?= _('Einrichtung') ?></th>
                     <th><?= _('Von') ?></th>
                     <th><?= _('Bis') ?></th>
