@@ -12,9 +12,11 @@ require 'bootstrap.php';
  */
 class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
 
+    const CRON = "DozentenrechteCronjob.php";
+
     public function __construct() {
         parent::__construct();
-
+        
         if ($GLOBALS['perm']->have_perm('dozent')) {
             $navigation = new AutoNavigation(_('Dozentenrechte'));
             if ($GLOBALS['perm']->have_perm('root')) {
@@ -28,7 +30,7 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
 
     public function initialize() {
         $navigation = Navigation::getItem('tools/dozentenrechteplugin');
-        
+
         if ($GLOBALS['perm']->have_perm('root')) {
             $subnavigation = new AutoNavigation(_('Anträge bestätigen'));
             $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
@@ -74,6 +76,26 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
                         include_once __DIR__ . $class . '.php';
                     });
         }
+    }
+
+    public static function onEnable($pluginId) {
+        parent::onEnable($pluginId);
+        $task_id = CronjobScheduler::registerTask(self::getCronName(), true);
+        //CronjobScheduler::scheduleOnce($task_id, strtotime('+1 minute'));
+        CronjobScheduler::schedulePeriodic($task_id, 30, 0);
+    }
+
+    public static function onDisable($pluginId) {
+        $task_id = CronjobTask::findByFilename(self::getCronName());
+        CronjobScheduler::unregisterTask($task_id[0]->task_id);
+        parent::onDisable($pluginId);
+    }
+
+    private static function getCronName() {
+        return "public/plugins_packages/intelec/DozentenrechtePlugin/" . DozentenrechtePlugin::CRON;
+        $plugin = PluginEngine::getPlugin(__CLASS__);
+        $path = $plugin->getPluginPath();
+        return dirname($path) . "/" . DozentenrechtePlugin::CRON;
     }
 
 }
