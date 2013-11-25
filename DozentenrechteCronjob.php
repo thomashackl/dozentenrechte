@@ -27,9 +27,9 @@ class DozentenrechteCronjob extends CronJob {
     }
 
     public function execute($last_result, $parameters = array()) {
-        echo "Dozentenrechte update begonnen um ".strftime("%a, %d %b %Y %H:%M:%S %z");
+        //echo "Dozentenrechte update begonnen um ".strftime("%a, %d %b %Y %H:%M:%S %z");
         Dozentenrecht::update();
-        echo "Dozentenrechte update beendet um ".strftime("%a, %d %b %Y %H:%M:%S %z");
+        //echo "Dozentenrechte update beendet um ".strftime("%a, %d %b %Y %H:%M:%S %z");
     }
 
     public function tearDown() {
