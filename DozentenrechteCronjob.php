@@ -1,5 +1,5 @@
 <?php
-require_once 'models/dozentenrecht.php';
+require_once 'models/Dozentenrecht.php';
 
 class DozentenrechteCronjob extends CronJob {
 
