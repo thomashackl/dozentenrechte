@@ -90,7 +90,9 @@ class ShowController extends StudipController {
         while ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
             $rights[] = Dozentenrecht::import($result);
         }
-        $this->rights = SimpleCollection::createFromArray($rights);
+        if ($rights) {
+            $this->rights = SimpleCollection::createFromArray($rights);
+        }
     }
 
     // customized #url_for for plugins
