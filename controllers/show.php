@@ -41,6 +41,7 @@ class ShowController extends StudipController {
             } else {
                 // set rights
                 $right = new Dozentenrecht();
+                $right->rights = Request::get('rights');
                 $right->from_id = $GLOBALS['user']->id;
                 $right->for_id = Request::get('user');
                 $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;

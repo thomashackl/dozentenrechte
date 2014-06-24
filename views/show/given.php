@@ -8,6 +8,7 @@
                 <tr>
                     <th><?= _('Antrag für') ?></th>
                     <th><?= _('Einrichtung') ?></th>
+                    <th><?= _('Typ') ?></th>
                     <th><?= _('Von') ?></th>
                     <th><?= _('Bis') ?></th>
                     <th><?= _('Antragsdatum') ?></th>
@@ -20,6 +21,7 @@
                     <tr>
                         <td><?= htmlReady($right->user->getFullname()) ?></td>
                         <td><?= htmlReady($right->institute->name) ?></td>
+                        <td><?= htmlReady($right->rights) ?></td>
                         <td><?= $right->getBeginMessage() ?></td>
                         <td><?= $right->getEndMessage() ?></td>
                         <td><?= $right->getRequestDate() ?></td>

@@ -95,10 +95,10 @@ class Dozentenrecht extends SimpleORMap {
     }
 
     private function grant() {
-        $this->user->perms = 'dozent';
+        $this->user->perms = $this->rights;
         $this->user->store();
         $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
-        $instMember->inst_perms = 'dozent';
+        $instMember->inst_perms = $this->rights;
         $instMember->store();
         $this->status = self::STARTED;
         $this->store();
