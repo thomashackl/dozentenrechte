@@ -141,7 +141,13 @@ class Dozentenrecht extends SimpleORMap {
     private function isLongestRunning() {
         return !self::countBySql('for_id = ? AND end > ? AND status = ?', array($this->for_id, $this->end, self::STARTED));
     }
+    
+    /**
+     * Override delete to revoke rights first if running
+     */
+    public function delete() {
+        $this->revoke();
+        parent::delete();
+    }
 
 }
-
-?>
