@@ -53,9 +53,9 @@ class Dozentenrecht extends SimpleORMap {
         }
         switch ($this->status) {
             case self::NOT_STARTED:
-                return _('Bestätigt');
+                return _('Bestï¿½tigt');
             case self::STARTED:
-                return _('Läuft');
+                return _('Lï¿½uft');
             case self::NOTIFIED:
                 return _('Auslaufend');
             case self::FINISHED:
@@ -125,12 +125,12 @@ class Dozentenrecht extends SimpleORMap {
             $msg = new messaging();
 
             // message for the expiring user
-            $message = _('Ihr Dozentenrechteantrag endet in Kürze');
+            $message = _('Ihr Dozentenrechteantrag endet in Kï¿½rze');
             PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show'), $message);
             //$msg->insert_message($message, get_username($this->for_id), "____%system%____", FALSE, FALSE, "1", FALSE, _("Systemnachricht:") . " " . _("Dozentenrechte"), TRUE);
 
             // message for the user that gave the request for the expiring user
-            $message = _('Ein von Ihnen gestellter Dozentenrechteantrag endet in Kürze');
+            $message = _('Ein von Ihnen gestellter Dozentenrechteantrag endet in Kï¿½rze');
             PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $message);
             //$msg->insert_message($message, get_username($this->from_id), "____%system%____", FALSE, FALSE, "1", FALSE, _("Systemnachricht:") . " " . _("Dozentenrechte"), TRUE);
 

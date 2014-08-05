@@ -1,8 +1,12 @@
 <?= $msg ?>
 <form class="studip_form" method="post">
     <fieldset><legend><?= _('Neuen Dozentenrechte Antrag stellen') ?></legend>
+        <select name='rights'>
+            <option value='dozent'><?= _('Dozentenrechte') ?></option>
+            <option value='tutor'><?= _('Tutorrechte') ?></option>
+        </select>
         <label>
-            <?= _('Dozentenrechte für') ?>
+            <?= _('für') ?>
             <?= QuickSearch::get("user", new FullUserSearch('user_id'))->setInputStyle("width: 240px")->defaultValue(Request::get('user'), Request::get('user_parameter'))->render(); ?>
         </label>
         <label>
