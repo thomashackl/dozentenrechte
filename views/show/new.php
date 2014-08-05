@@ -3,7 +3,7 @@
     <fieldset><legend><?= _('Neuen Dozentenrechte Antrag stellen') ?></legend>
         <label>
             <?= _('Dozentenrechte für') ?>
-            <?= QuickSearch::get("user", new StandardSearch('user_id'))->setInputStyle("width: 240px")->defaultValue(Request::get('user'), Request::get('user_parameter'))->render(); ?>
+            <?= QuickSearch::get("user", new FullUserSearch('user_id'))->setInputStyle("width: 240px")->defaultValue(Request::get('user'), Request::get('user_parameter'))->render(); ?>
         </label>
         <label>
             <?= _('an der Einrichtung') ?>
