@@ -57,10 +57,10 @@ class FullUserSearch extends StandardSearch {
      */
     private function getSQL() {
         return "SELECT DISTINCT `auth_user_md5`.`user_id`, CONCAT(`auth_user_md5`.`Vorname`, \" \", `auth_user_md5`.`Nachname`, \" (\", `auth_user_md5`.`username`,\")\") " .
-                "FROM `auth_user_md5` LEFT JOIN `user_info ON (user_info.user_id = auth_user_md5.user_id) " .
-                "WHERE (CONCAT(auth_user_md5.Vorname, \" \", auth_user_md5.Nachname) LIKE :input " .
-                    "OR auth_user_md5.username LIKE :input) " .
-                "ORDER BY Vorname, Nachname";
+                "FROM `auth_user_md5` LEFT JOIN `user_info` ON (`user_info`.`user_id` = `auth_user_md5`.`user_id`) " .
+                "WHERE (CONCAT(`auth_user_md5`.`Vorname`, \" \", `auth_user_md5`.`Nachname`) LIKE :input " .
+                    "OR `auth_user_md5`.`username` LIKE :input) " .
+                "ORDER BY `Nachname`, `Vorname`";
     }
 
     /**
