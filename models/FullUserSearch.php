@@ -60,6 +60,7 @@ class FullUserSearch extends StandardSearch {
                 "FROM `auth_user_md5` LEFT JOIN `user_info` ON (`user_info`.`user_id` = `auth_user_md5`.`user_id`) " .
                 "WHERE (CONCAT(`auth_user_md5`.`Vorname`, \" \", `auth_user_md5`.`Nachname`) LIKE :input " .
                     "OR `auth_user_md5`.`username` LIKE :input) " .
+                    "AND `auth_user_md5`.`visible` != 'never'" .
                 "ORDER BY `Nachname`, `Vorname`";
     }
 
