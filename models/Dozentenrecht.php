@@ -53,9 +53,9 @@ class Dozentenrecht extends SimpleORMap {
         }
         switch ($this->status) {
             case self::NOT_STARTED:
-                return _('Bestï¿½tigt');
+                return _('Bestätigt');
             case self::STARTED:
-                return _('Lï¿½uft');
+                return _('Läuft');
             case self::NOTIFIED:
                 return _('Auslaufend');
             case self::FINISHED:
