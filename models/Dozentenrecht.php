@@ -95,14 +95,16 @@ class Dozentenrecht extends SimpleORMap {
     }
 
     private function grant() {
-        $um = new UserManagement($this->user->id);
-        $um->changeUser(array('auth_user_md5.perms' => 'dozent'));
-        $um->storeToDatabase();
-        $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
-        $instMember->inst_perms = 'dozent';
-        $instMember->store();
-        $this->status = self::STARTED;
-        $this->store();
+        if ($this->user->id && $this->user->username) {
+            $um = new UserManagement($this->user->id);
+            $um->changeUser(array('auth_user_md5.perms' => 'dozent'));
+            $um->storeToDatabase();
+            $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
+            $instMember->inst_perms = 'dozent';
+            $instMember->store();
+            $this->status = self::STARTED;
+            $this->store();
+        }
     }
 
     public function revoke() {
