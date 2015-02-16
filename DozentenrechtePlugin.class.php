@@ -13,13 +13,14 @@ require 'bootstrap.php';
 class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
 
     const CRON = "DozentenrechteCronjob.php";
+    const ROOT_NAME = "Dozentenrechte - Root";
 
     public function __construct() {
         parent::__construct();
-        
-        if ($GLOBALS['perm']->have_perm('dozent')) {
+
+        if ($this->have_perm('dozent')) {
             $navigation = new AutoNavigation(_('Dozentenrechte'));
-            if ($GLOBALS['perm']->have_perm('root')) {
+            if ($this->have_perm('root')) {
                 $navigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
             } else {
                 $navigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
@@ -31,7 +32,7 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
     public function initialize() {
         $navigation = Navigation::getItem('tools/dozentenrechteplugin');
 
-        if ($GLOBALS['perm']->have_perm('root')) {
+        if ($this->have_perm('root')) {
             $subnavigation = new AutoNavigation(_('Anträge bestätigen'));
             $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
             $navigation->addSubNavigation('accept', $subnavigation);
@@ -49,7 +50,7 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
         $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/new'));
         $navigation->addSubNavigation('new', $subnavigation);
 
-        if ($GLOBALS['perm']->have_perm('root')) {
+        if ($this->have_perm('root')) {
             $subnavigation = new AutoNavigation(_('Suche'));
             $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
             $navigation->addSubNavigation('search', $subnavigation);
@@ -73,8 +74,8 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
             StudipAutoloader::addAutoloadPath(__DIR__ . '/models');
         } else {
             spl_autoload_register(function ($class) {
-                        include_once __DIR__ . $class . '.php';
-                    });
+                include_once __DIR__ . $class . '.php';
+            });
         }
     }
 
@@ -96,6 +97,16 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
         $plugin = PluginEngine::getPlugin(__CLASS__);
         $path = $plugin->getPluginPath();
         return dirname($path) . "/" . DozentenrechtePlugin::CRON;
+    }
+
+    public static function have_perm($perm) {
+        return $GLOBALS['perm']->have_perm($perm) || (defined("static::ROOT_NAME") && RolePersistence::isAssignedRole($GLOBALS['user']->id, static::ROOT_NAME));
+    }
+    
+    public static function check($perm) {
+        if (!static::have_perm($perm)) {
+            throw new AccessDeniedException;
+        }
     }
 
 }

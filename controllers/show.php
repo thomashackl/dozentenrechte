@@ -20,7 +20,7 @@ class ShowController extends StudipController {
             }
             if (!Request::get('inst')) {
                 $errorStack[] = _('Einrichtung angeben');
-            } else if (!$GLOBALS['perm']->have_perm('root') && !$GLOBALS['perm']->have_studip_perm('dozent', Request::get('inst'))) {
+            } else if (!DozentenrechtePlugin::have_perm('root') && !$GLOBALS['perm']->have_studip_perm('dozent', Request::get('inst'))) {
                 $inst = new Institute(Request::get('inst'));
                 $errorStack[] = _('Sie haben keine Berechtigung an der Einrichtung') . ' ' . _('Dozentenrechte zu beantragen');
             }
@@ -50,7 +50,7 @@ class ShowController extends StudipController {
                 $right->store();
                 
                 // if a root user puts a request it is automaticly verified
-                if ($GLOBALS['perm']->have_perm('root')) {
+                if (DozentenrechtePlugin::have_perm('root')) {
                     $right->verify();
                 }
                 $this->redirect('show/given');
@@ -64,7 +64,7 @@ class ShowController extends StudipController {
     }
 
     public function accept_action() {
-        $GLOBALS['perm']->check('root');
+        DozentenrechtePlugin::check('root');
         if (Request::submitted('accept')) {
             $rights = SimpleORMapCollection::createFromArray(Dozentenrecht::findMany(array_keys(Request::getArray('verify'))));
             $rights->verify();
@@ -73,7 +73,7 @@ class ShowController extends StudipController {
     }
 
     public function search_action() {
-        $GLOBALS['perm']->check('root');
+        DozentenrechtePlugin::check('root');
         $this->checkEnded();
         $sql = "SELECT d.* FROM dozentenrechte d
             JOIN auth_user_md5 a ON (for_id = user_id) 
@@ -116,7 +116,7 @@ class ShowController extends StudipController {
     private function checkRejected() {
         if (Request::submitted('reject')) {
             $right = new Dozentenrecht(Request::get('reject'));
-            if ($GLOBALS['perm']->have_perm('root') || $right->from_id == $GLOBALS['user']->id) {
+            if (DozentenrechtePlugin::have_perm('root') || $right->from_id == $GLOBALS['user']->id) {
                 $right->delete();
             }
         }
