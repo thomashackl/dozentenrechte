@@ -20,22 +20,22 @@ class Dozentenrecht extends SimpleORMap {
     // notify 7 days before end
     const TIME_TO_NOTIFY = 604800;
     const INFINITY = 2147483647;
-
-    public function __construct($id = null) {
-        $this->db_table = 'dozentenrechte';
-        $this->belongs_to['user'] = array(
+    
+    public static function configure($config = array()) {
+        $config['db_table'] = 'dozentenrechte';
+        $config['belongs_to']['user'] = array(
             'class_name' => 'User',
             'foreign_key' => 'for_id'
         );
-        $this->belongs_to['owner'] = array(
+        $config['belongs_to']['owner'] = array(
             'class_name' => 'User',
             'foreign_key' => 'from_id'
         );
-        $this->belongs_to['institute'] = array(
+        $config['belongs_to']['institute'] = array(
             'class_name' => 'Institute',
             'foreign_key' => 'institute_id'
         );
-        parent::__construct($id);
+        parent::configure($config);
     }
 
     public static function getUnfinished() {
