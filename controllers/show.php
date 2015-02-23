@@ -5,6 +5,8 @@ class ShowController extends StudipController {
     public function before_filter(&$action, &$args) {
         $GLOBALS['perm']->check('dozent');
         $this->set_layout($GLOBALS['template_factory']->open('layouts/base_without_infobox'));
+        $this->sidebar = Sidebar::get();
+        $this->sidebar->setImage('sidebar/person-sidebar.png');
     }
 
     public function index_action() {
