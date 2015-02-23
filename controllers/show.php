@@ -16,28 +16,28 @@ class ShowController extends StudipController {
 
             //security checks
             if (!Request::get('user')) {
-                $errorStack[] = _('Benutzername angeben');
+                $errorStack[] = dgettext('dozentenrechte', 'Benutzername angeben');
             }
             if (!Request::get('inst')) {
-                $errorStack[] = _('Einrichtung angeben');
+                $errorStack[] = dgettext('dozentenrechte', 'Einrichtung angeben');
             } else if (!DozentenrechtePlugin::have_perm('root') && !$GLOBALS['perm']->have_studip_perm('dozent', Request::get('inst'))) {
                 $inst = new Institute(Request::get('inst'));
-                $errorStack[] = _('Sie haben keine Berechtigung an der Einrichtung') . ' ' . _('Dozentenrechte zu beantragen');
+                $errorStack[] = dgettext('dozentenrechte', 'Sie haben keine Berechtigung an der Einrichtung') . ' ' . dgettext('dozentenrechte', 'Dozentenrechte zu beantragen');
             }
             if (Request::get('from_type') && !Request::get('from')) {
-                $errorStack[] = _('Bitte wählen sie den Beginn des Antrags aus');
+                $errorStack[] = dgettext('dozentenrechte', 'Bitte wählen sie den Beginn des Antrags aus');
             }
             if (Request::get('to_type') && !Request::get('to')) {
-                $errorStack[] = _('Bitte wählen sie das Ende des Antrags aus');
+                $errorStack[] = dgettext('dozentenrechte', 'Bitte wählen sie das Ende des Antrags aus');
             }
             if (strtotime(Request::get('from')) > strtotime(Request::get('to'))) {
-                $errorStack[] = _('Enddatum liegt vor Beginndatum');
+                $errorStack[] = dgettext('dozentenrechte', 'Enddatum liegt vor Beginndatum');
             }
             if (Request::get('to') && strtotime(Request::get('to')) < time()) {
-                $errorStack[] = _('Antrag liegt in der Vergangenheit');
+                $errorStack[] = dgettext('dozentenrechte', 'Antrag liegt in der Vergangenheit');
             }
             if ($errorStack) {
-                $this->msg = MessageBox::error(_('Bitte überprüfen sie ihren Antrag'), $errorStack);
+                $this->msg = MessageBox::error(dgettext('dozentenrechte', 'Bitte überprüfen sie ihren Antrag'), $errorStack);
             } else {
                 // set rights
                 $right = new Dozentenrecht();

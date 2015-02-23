@@ -4,20 +4,26 @@ require_once 'models/Dozentenrecht.php';
 class DozentenrechteCronjob extends CronJob {
 
     public static function getName() {
-        return _('Dozentenrechte');
+        // Localization
+        bindtextdomain('roomplannerplugin', __DIR__ . '/locale');
+        return dgettext('dozentenrechte', 'Dozentenrechte');
     }
 
     public static function getDescription() {
-        return _('Aktualisiert Dozentenrechte');
+        // Localization
+        bindtextdomain('roomplannerplugin', __DIR__ . '/locale');
+        return dgettext('dozentenrechte', 'Aktualisiert Dozentenrechte');
     }
 
     public static function getParameters() {
+        // Localization
+        bindtextdomain('roomplannerplugin', __DIR__ . '/locale');
         return array(
             'verbose' => array(
                 'type' => 'boolean',
                 'default' => false,
                 'status' => 'optional',
-                'description' => _('Sollen Ausgaben erzeugt werden'),
+                'description' => dgettext('dozentenrechte', 'Sollen Ausgaben erzeugt werden'),
             ),
         );
     }

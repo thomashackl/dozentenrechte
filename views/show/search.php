@@ -1,24 +1,24 @@
 <form method="post">
     <input name="search" value="<?= htmlReady(Request::get('search')) ?>">
-    <?= \Studip\Button::create(_('Suchen')) ?>
+    <?= \Studip\Button::create(dgettext('dozentenrechte', 'Suchen')) ?>
 </form>
 <? if ($rights): ?>
     <form method="post">   
         <table class="default">
             <caption>
-                <?= _('Gestellte Dozentenanträge') ?>
+                <?= dgettext('dozentenrechte', 'Gestellte Dozentenanträge') ?>
             </caption>
             <thead>
                 <tr>
-                    <th><?= _('Von') ?></th>
-                    <th><?= _('Für') ?></th>
-                    <th><?= _('Einrichtung') ?></th>
-                    <th><?= _('Typ') ?></th>
-                    <th><?= _('Von') ?></th>
-                    <th><?= _('Bis') ?></th>
-                    <th><?= _('Antragsdatum') ?></th>
-                    <th><?= _('Status') ?></th>
-                    <th><?= _('Aktion') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Von') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Für') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Einrichtung') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Typ') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Von') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Bis') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Antragsdatum') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Status') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Aktion') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -38,9 +38,9 @@
                         <td><?= $right->getStatusMessage() ?></td>
                         <td>
                             <?= !$right->verify 
-                                ? \Studip\Button::create(_('Antrag löschen'), 'reject', array('value' => $right->id)) 
+                                ? \Studip\Button::create(dgettext('dozentenrechte', 'Antrag löschen'), 'reject', array('value' => $right->id))
                                 : $right->status < Dozentenrecht::FINISHED 
-                                    ? \Studip\Button::create(_('Beenden'), 'end', array('value' => $right->id)) 
+                                    ? \Studip\Button::create(dgettext('dozentenrechte', 'Beenden'), 'end', array('value' => $right->id))
                                     : "" ?>
                         </td>
                     </tr>
@@ -49,5 +49,5 @@
         </table>
     </form> 
 <? else: ?>
-    <?= _('Es liegen keine Anträge vor') ?>
+    <?= dgettext('dozentenrechte', 'Es liegen keine Anträge vor') ?>
 <? endif; ?>

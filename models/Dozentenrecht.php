@@ -49,17 +49,17 @@ class Dozentenrecht extends SimpleORMap {
 
     public function getStatusMessage() {
         if (!$this->verify) {
-            return _('Wartend');
+            return dgettext('dozentenrechte', 'Wartend');
         }
         switch ($this->status) {
             case self::NOT_STARTED:
-                return _('Bestätigt');
+                return dgettext('dozentenrechte', 'Bestätigt');
             case self::STARTED:
-                return _('Läuft');
+                return dgettext('dozentenrechte', 'Läuft');
             case self::NOTIFIED:
-                return _('Auslaufend');
+                return dgettext('dozentenrechte', 'Auslaufend');
             case self::FINISHED:
-                return _('Beendet');
+                return dgettext('dozentenrechte', 'Beendet');
         }
     }
     
@@ -70,11 +70,11 @@ class Dozentenrecht extends SimpleORMap {
     }
     
     public function getEndMessage($style = 'd.m.Y') {
-        return $this->end >= self::INFINITY ? _('Unbegrenzt') : date($style, $this->end);
+        return $this->end >= self::INFINITY ? dgettext('dozentenrechte', 'Unbegrenzt') : date($style, $this->end);
     }
     
     public function getBeginMessage($style = 'd.m.Y') {
-        return $this->begin ? date($style, $this->begin) : _('Unbegrenzt');
+        return $this->begin ? date($style, $this->begin) : dgettext('dozentenrechte', 'Unbegrenzt');
     }
     
     public function getRequestDate($style = 'd.m.Y') {
@@ -127,14 +127,14 @@ class Dozentenrecht extends SimpleORMap {
             $msg = new messaging();
 
             // message for the expiring user
-            $message = _('Ihr Dozentenrechteantrag endet in Kürze');
+            $message = dgettext('dozentenrechte', 'Ihr Dozentenrechteantrag endet in Kürze');
             PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show'), $message);
-            //$msg->insert_message($message, get_username($this->for_id), "____%system%____", FALSE, FALSE, "1", FALSE, _("Systemnachricht:") . " " . _("Dozentenrechte"), TRUE);
+            //$msg->insert_message($message, get_username($this->for_id), "____%system%____", FALSE, FALSE, "1", FALSE, dgettext('dozentenrechte', "Systemnachricht:") . " " . dgettext('dozentenrechte', "Dozentenrechte"), TRUE);
 
             // message for the user that gave the request for the expiring user
-            $message = _('Ein von Ihnen gestellter Dozentenrechteantrag endet in Kürze');
+            $message = dgettext('dozentenrechte', 'Ein von Ihnen gestellter Dozentenrechteantrag endet in Kürze');
             PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $message);
-            //$msg->insert_message($message, get_username($this->from_id), "____%system%____", FALSE, FALSE, "1", FALSE, _("Systemnachricht:") . " " . _("Dozentenrechte"), TRUE);
+            //$msg->insert_message($message, get_username($this->from_id), "____%system%____", FALSE, FALSE, "1", FALSE, dgettext('dozentenrechte', "Systemnachricht:") . " " . dgettext('dozentenrechte', "Dozentenrechte"), TRUE);
 
             $this->status = self::NOTIFIED;
             $this->store();

@@ -2,18 +2,18 @@
     <form method="post">   
         <table class="default">
             <caption>
-                <?= _('Gestellte Dozentenanträge') ?>
+                <?= dgettext('dozentenrechte', 'Gestellte Dozentenanträge') ?>
             </caption>
             <thead>
                 <tr>
-                    <th><?= _('Antrag für') ?></th>
-                    <th><?= _('Einrichtung') ?></th>
-                    <th><?= _('Typ') ?></th>
-                    <th><?= _('Von') ?></th>
-                    <th><?= _('Bis') ?></th>
-                    <th><?= _('Antragsdatum') ?></th>
-                    <th><?= _('Status') ?></th>
-                    <th><?= _('Aktion') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Antrag für') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Einrichtung') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Typ') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Von') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Bis') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Antragsdatum') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Status') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Aktion') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -27,8 +27,8 @@
                         <td><?= $right->getRequestDate() ?></td>
                         <td><?= $right->getStatusMessage() ?></td>
                         <td>
-                            <?= $right->verify ? "" : \Studip\Button::create(_('Antrag zurückziehen'), 'reject', array('value' => $right->id)) ?>
-                            <?= $GLOBALS['perm']->have_perm('root') ? \Studip\Button::create(_('Antrag löschen'), 'reject', array('value' => $right->id)) : "" ?>
+                            <?= $right->verify ? "" : \Studip\Button::create(dgettext('dozentenrechte', 'Antrag zurückziehen'), 'reject', array('value' => $right->id)) ?>
+                            <?= $GLOBALS['perm']->have_perm('root') ? \Studip\Button::create(dgettext('dozentenrechte', 'Antrag löschen'), 'reject', array('value' => $right->id)) : "" ?>
                         </td>
                     </tr>
                 <? endforeach; ?>
@@ -36,5 +36,5 @@
         </table>
     </form> 
 <? else: ?>
-    <?= _('Von ihnen liegen keine Anträge vor') ?>
+    <?= dgettext('dozentenrechte', 'Von ihnen liegen keine Anträge vor') ?>
 <? endif; ?>

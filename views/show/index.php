@@ -2,17 +2,17 @@
     <form method="post">   
         <table class="default">
             <caption>
-                <?= _('Gestellte Dozentenanträge') ?>
+                <?= dgettext('dozentenrechte', 'Gestellte Dozentenanträge') ?>
             </caption>
             <thead>
                 <tr>
-                    <th><?= _('Gestellt von') ?></th>
-                    <th><?= _('Einrichtung') ?></th>
-                    <th><?= _('Typ') ?></th>
-                    <th><?= _('Von') ?></th>
-                    <th><?= _('Bis') ?></th>
-                    <th><?= _('Antragsdatum') ?></th>
-                    <th><?= _('Status') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Gestellt von') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Einrichtung') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Typ') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Von') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Bis') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Antragsdatum') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Status') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -31,5 +31,5 @@
         </table>
     </form> 
 <? else: ?>
-    <?= _('Es liegen keine Anträge für Sie vor') ?>
+    <?= dgettext('dozentenrechte', 'Es liegen keine Anträge für Sie vor') ?>
 <? endif; ?>
