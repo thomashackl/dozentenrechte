@@ -109,9 +109,11 @@ class Dozentenrecht extends SimpleORMap {
 
     public function revoke() {
         if ($this->isLongestRunning()) {
-            $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
-            $instMember->inst_perms = 'autor';
-            $instMember->store();
+            if (InstituteMember::exists($this->for_id, $this->institute_id)) {
+                $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
+                $instMember->inst_perms = 'autor';
+                $instMember->store();
+            }
             if (!InstituteMember::countBySql('user_id = ? AND inst_perms = ?', array($this->for_id, 'dozent'))
                     && !CourseMember::countBySql('user_id = ? AND status = ?', array($this->for_id, 'dozent'))) {
                 $this->user->perms = 'autor';
