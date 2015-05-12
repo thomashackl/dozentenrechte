@@ -18,6 +18,7 @@
             </thead>
             <tbody>
                 <? foreach ($rights->orderBy('mkdate desc') as $right): ?>
+                    <?php if ($right->user) : ?>
                     <tr>
                         <td><?= htmlReady($right->user->getFullname()) ?></td>
                         <td><?= htmlReady($right->institute->name) ?></td>
@@ -31,6 +32,7 @@
                             <?= $GLOBALS['perm']->have_perm('root') ? \Studip\Button::create(dgettext('dozentenrechte', 'Antrag löschen'), 'reject', array('value' => $right->id)) : "" ?>
                         </td>
                     </tr>
+                    <?php endif ?>
                 <? endforeach; ?>
             </tbody>
         </table>
