@@ -6,7 +6,7 @@
             </caption>
             <thead>
                 <tr>
-                    <th><?= dgettext('dozentenrechte', 'Von') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'Gestellt von') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Für') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Einrichtung') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Typ') ?></th>
