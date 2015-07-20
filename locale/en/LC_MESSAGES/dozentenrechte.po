@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-23 14:15+0100\n"
-"PO-Revision-Date: 2015-05-07 10:59+0200\n"
+"PO-Revision-Date: 2015-07-20 15:51+0200\n"
 "Last-Translator: Thomas <Thomas.Hackl@uni-passau.de>\n"
 "Language-Team: English "
 "<http://example.com/weblate/projects/studip/dozentenrechte/en/>\n"
@@ -21,68 +21,68 @@ msgstr ""
 
 #: controllers/show.php:19
 msgid "Benutzername angeben"
-msgstr ""
+msgstr "Username"
 
 #: controllers/show.php:22
 msgid "Einrichtung angeben"
-msgstr ""
+msgstr "Institution"
 
 #: controllers/show.php:25
 msgid "Sie haben keine Berechtigung an der Einrichtung"
-msgstr ""
+msgstr "You don't have the necessary permissions at the given institution"
 
 #: controllers/show.php:25
 msgid "Dozentenrechte zu beantragen"
-msgstr ""
+msgstr "to apply for lecturer rights"
 
 #: controllers/show.php:28
 msgid "Bitte wählen sie den Beginn des Antrags aus"
-msgstr ""
+msgstr "Please specify the application start time"
 
 #: controllers/show.php:31
 msgid "Bitte wählen sie das Ende des Antrags aus"
-msgstr ""
+msgstr "Please specify the application end time"
 
 #: controllers/show.php:34
 msgid "Enddatum liegt vor Beginndatum"
-msgstr ""
+msgstr "End date is before start date"
 
 #: controllers/show.php:37
 msgid "Antrag liegt in der Vergangenheit"
-msgstr ""
+msgstr "Application is in the past"
 
 #: controllers/show.php:40
 msgid "Bitte überprüfen sie ihren Antrag"
-msgstr ""
+msgstr "Please review your application"
 
 #: DozentenrechteCronjob.php:9 DozentenrechtePlugin.class.php:23
 #: views/show/new.php:5
 msgid "Dozentenrechte"
-msgstr ""
+msgstr "Lecturer rights"
 
 #: DozentenrechteCronjob.php:15
 msgid "Aktualisiert Dozentenrechte"
-msgstr ""
+msgstr "Refreshes lecturer rights"
 
 #: DozentenrechteCronjob.php:26
 msgid "Sollen Ausgaben erzeugt werden"
-msgstr ""
+msgstr "Generate output"
 
 #: DozentenrechtePlugin.class.php:37
 msgid "Anträge bestätigen"
-msgstr ""
+msgstr "Confirm applications"
 
 #: DozentenrechtePlugin.class.php:42
 msgid "Für mich gestellte Anträge"
-msgstr ""
+msgstr "Applications filed for me"
 
 #: DozentenrechtePlugin.class.php:46
 msgid "Von mir gestellte Anträge"
-msgstr ""
+msgstr "Applications filed by me"
 
 #: DozentenrechtePlugin.class.php:50
 msgid "Neuer Antrag"
-msgstr ""
+msgstr "New application"
 
 #: DozentenrechtePlugin.class.php:55
 msgid "Suche"
@@ -90,56 +90,56 @@ msgstr "Search"
 
 #: models/Dozentenrecht.php:52
 msgid "Wartend"
-msgstr ""
+msgstr "Waiting"
 
 #: models/Dozentenrecht.php:56
 msgid "Bestätigt"
-msgstr ""
+msgstr "Confirmed"
 
 #: models/Dozentenrecht.php:58
 msgid "Läuft"
-msgstr ""
+msgstr "Running"
 
 #: models/Dozentenrecht.php:60
 msgid "Auslaufend"
-msgstr ""
+msgstr "Expiring"
 
 #: models/Dozentenrecht.php:62
 msgid "Beendet"
-msgstr ""
+msgstr "Ended"
 
 #: models/Dozentenrecht.php:73 models/Dozentenrecht.php:77
 #: views/show/new.php:30
 msgid "Unbegrenzt"
-msgstr ""
+msgstr "Unlimited"
 
 #: models/Dozentenrecht.php:130
 msgid "Ihr Dozentenrechteantrag endet in Kürze"
-msgstr ""
+msgstr "Your application for lecturer rights will expire soon"
 
 #: models/Dozentenrecht.php:135
 msgid "Ein von Ihnen gestellter Dozentenrechteantrag endet in Kürze"
-msgstr ""
+msgstr "An application for lecturer rights filed by you will expire soon"
 
 #: views/show/accept.php:5 views/show/given.php:5 views/show/index.php:5
 #: views/show/search.php:9
 msgid "Gestellte Dozentenanträge"
-msgstr ""
+msgstr "Applications"
 
 #: views/show/accept.php:9 views/show/accept.php:13 views/show/given.php:12
 #: views/show/index.php:12 views/show/new.php:16 views/show/search.php:13
 #: views/show/search.php:17
 msgid "Von"
-msgstr ""
+msgstr "From"
 
 #: views/show/accept.php:10 views/show/search.php:14
 msgid "Für"
-msgstr ""
+msgstr "For"
 
 #: views/show/accept.php:11 views/show/given.php:10 views/show/index.php:10
 #: views/show/search.php:15
 msgid "Einrichtung"
-msgstr ""
+msgstr "Institution"
 
 #: views/show/accept.php:12 views/show/given.php:11 views/show/index.php:11
 #: views/show/search.php:16
@@ -149,28 +149,28 @@ msgstr "Type"
 #: views/show/accept.php:14 views/show/given.php:13 views/show/index.php:13
 #: views/show/new.php:27 views/show/search.php:18
 msgid "Bis"
-msgstr ""
+msgstr "Until"
 
 #: views/show/accept.php:15 views/show/given.php:14 views/show/index.php:14
 #: views/show/search.php:19
 msgid "Antragsdatum"
-msgstr ""
+msgstr "Application date"
 
 #: views/show/accept.php:16
 msgid "Bestätigen"
-msgstr ""
+msgstr "Confirm"
 
 #: views/show/accept.php:40
 msgid "Markierte bestätigen"
-msgstr ""
+msgstr "Confirm selected"
 
 #: views/show/accept.php:47 views/show/search.php:52
 msgid "Es liegen keine Anträge vor"
-msgstr ""
+msgstr "No applications found"
 
 #: views/show/given.php:9
 msgid "Antrag für"
-msgstr ""
+msgstr "Application for"
 
 #: views/show/given.php:15 views/show/index.php:15 views/show/search.php:20
 msgid "Status"
@@ -178,68 +178,68 @@ msgstr "Status"
 
 #: views/show/given.php:16 views/show/search.php:21
 msgid "Aktion"
-msgstr ""
+msgstr "Action"
 
 #: views/show/given.php:30
 msgid "Antrag zurückziehen"
-msgstr ""
+msgstr "Withdraw application"
 
 #: views/show/given.php:31 views/show/search.php:41
 msgid "Antrag löschen"
-msgstr ""
+msgstr "Delete application"
 
 #: views/show/given.php:39
 msgid "Von ihnen liegen keine Anträge vor"
-msgstr ""
+msgstr "There are no applications filed by you"
 
 #: views/show/index.php:9
 msgid "Gestellt von"
-msgstr ""
+msgstr "Filed by"
 
 #: views/show/index.php:34
 msgid "Es liegen keine Anträge für Sie vor"
-msgstr ""
+msgstr "There are no applications for you"
 
 #: views/show/new.php:3
 msgid "Neuen Dozentenrechte Antrag stellen"
-msgstr ""
+msgstr "File new application for lecturer rights"
 
 #: views/show/new.php:6
 msgid "Tutorrechte"
-msgstr ""
+msgstr "Tutor rights"
 
 #: views/show/new.php:9
 msgid "für"
-msgstr ""
+msgstr "for"
 
 #: views/show/new.php:13
 msgid "an der Einrichtung"
-msgstr ""
+msgstr "at institution"
 
 #: views/show/new.php:19
 msgid "Ab sofort"
-msgstr ""
+msgstr "Starting now"
 
 #: views/show/new.php:23
 msgid "Ab Datum"
-msgstr ""
+msgstr "Starting at date"
 
 #: views/show/new.php:24 views/show/new.php:35
 msgid "Datum"
-msgstr ""
+msgstr "Date"
 
 #: views/show/new.php:34
 msgid "Bis Datum"
-msgstr ""
+msgstr "Until"
 
 #: views/show/new.php:39
 msgid "Antrag stellen"
-msgstr ""
+msgstr "File application"
 
 #: views/show/search.php:3
 msgid "Suchen"
-msgstr ""
+msgstr "Search"
 
 #: views/show/search.php:43
 msgid "Beenden"
-msgstr ""
+msgstr "End"
