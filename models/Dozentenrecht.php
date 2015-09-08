@@ -65,6 +65,14 @@ class Dozentenrecht extends SimpleORMap {
     
     public function verify($to = TRUE) {
         $this->verify = (int) $to;
+        
+        // Send notification to users
+        $message = dgettext('dozentenrechte', 'Ihr Dozentenrechteantrag wurde bestätigt');
+        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show'), $message);
+        $message = sprintf(dgettext('dozentenrechte', 'Ihr Antrag auf erweiterte Rechte für %s (Kennung: %s) an der Einrichtung %s von %s bis %s wurde soeben bestätigt. %1$s kann nun als Dozent in die jeweiligen Veranstaltungen eingetragen werden.'), $this->user->getFullname(), $this->user->username, $this->institute->name, $this->getBeginMessage(), $this->getEndMessage());
+        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $message);
+
+        // Check if they need to be activated
         $this->work();
         $this->store();
     }
