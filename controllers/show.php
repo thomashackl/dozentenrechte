@@ -17,7 +17,7 @@ class ShowController extends StudipController {
         if (Request::submitted('save')) {
 
             //security checks
-            if (!Request::get('user')) {
+            if (!Request::submitted('user')) {
                 $errorStack[] = dgettext('dozentenrechte', 'Benutzername angeben');
             }
             if (!Request::get('inst')) {
@@ -42,22 +42,30 @@ class ShowController extends StudipController {
                 $this->msg = MessageBox::error(dgettext('dozentenrechte', 'Bitte überprüfen sie ihren Antrag'), $errorStack);
             } else {
                 // set rights
-                $right = new Dozentenrecht();
-                $right->rights = Request::get('rights');
-                $right->from_id = $GLOBALS['user']->id;
-                $right->for_id = Request::get('user');
-                $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;
-                $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
-                $right->institute_id = Request::get('inst');
-                $right->store();
-                
-                // if a root user puts a request it is automaticly verified
-                if (DozentenrechtePlugin::have_perm('root')) {
-                    $right->verify();
+                $users = Request::get('user') ? array(Request::get('user')) : Request::getArray('user');
+                foreach ($users as $user) {
+                    $right = new Dozentenrecht();
+                    $right->rights = Request::get('rights');
+                    $right->from_id = $GLOBALS['user']->id;
+                    $right->for_id = $user;
+                    $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;
+                    $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
+                    $right->institute_id = Request::get('inst');
+                    $right->store();
+
+                    // if a root user puts a request it is automaticly verified
+                    if (DozentenrechtePlugin::have_perm('root')) {
+                        $right->verify();
+                    }
                 }
+
                 $this->redirect('show/given');
             }
         }
+    }
+
+    public function userinput_action() {
+        $this->set_layout(null);
     }
 
     public function given_action() {

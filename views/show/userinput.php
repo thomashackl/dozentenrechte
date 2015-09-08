@@ -1,0 +1,1 @@
+<?= QuickSearch::get("user".  uniqid(), new FullUserSearch('user_id'))->setInputStyle("width: 240px")->defaultValue(Request::get('user'), Request::get('user_parameter'))->render(); ?>

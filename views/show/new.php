@@ -9,6 +9,7 @@
             <?= dgettext('dozentenrechte', 'für') ?>
             <?= QuickSearch::get("user", new FullUserSearch('user_id'))->setInputStyle("width: 240px")->defaultValue(Request::get('user'), Request::get('user_parameter'))->render(); ?>
         </label>
+        <?= Assets::img('icons/16/blue/add.png', array('id' => 'add_userinput')); ?>
         <label>
             <?= dgettext('dozentenrechte', 'an der Einrichtung') ?>
             <?= QuickSearch::get("inst", new StandardSearch('Institut_id'))->setInputStyle("width: 240px")->defaultValue(Request::get('inst'), Request::get('inst_parameter'))->render(); ?>
@@ -19,7 +20,7 @@
                 <?= dgettext('dozentenrechte', 'Ab sofort') ?>
             </label>
             <label>
-                <input type="radio" name="from_type" value="1" <?= Request::get('from_type') ? "CHECKED" : "";?>>
+                <input type="radio" name="from_type" value="1" <?= Request::get('from_type') ? "CHECKED" : ""; ?>>
                 <?= dgettext('dozentenrechte', 'Ab Datum') ?>
                 <input name="from" type="text" placeholder="<?= dgettext('dozentenrechte', 'Datum') ?>" class="datepicker" value="<?= Request::get('from') ?>"/>
             </label>
@@ -30,7 +31,7 @@
                 <?= dgettext('dozentenrechte', 'Unbegrenzt') ?>
             </label>
             <label>
-                <input type="radio" name="to_type" value="1" <?= Request::get('to_type') ? "CHECKED" : "";?>>
+                <input type="radio" name="to_type" value="1" <?= Request::get('to_type') ? "CHECKED" : ""; ?>>
                 <?= dgettext('dozentenrechte', 'Bis Datum') ?>
                 <input name="to" type="text" placeholder="<?= dgettext('dozentenrechte', 'Datum') ?>" value="<?= Request::get('to') ?>" class="datepicker" />
             </label>
@@ -40,7 +41,16 @@
 </form>
 
 <script>
-    $(function() {
+    $(function () {
         $(".datepicker").datepicker();
+    });
+    $('#add_userinput').click(function () {
+        var droppod = $(this);
+        $.get(STUDIP.URLHelper.getURL('plugins.php/dozentenrechteplugin/show/userinput'), function (data) {
+            droppod.prev('label').append(data);
+            droppod.prev('label').last().find("script").each(function (i) {
+            $('input[type=hidden][name^=user]').attr('name', 'user[]');
+            });
+        });
     });
 </script>
