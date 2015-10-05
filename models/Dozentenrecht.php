@@ -103,7 +103,7 @@ class Dozentenrecht extends SimpleORMap {
     }
 
     private function grant() {
-        if ($this->user->id && $this->user->username) {
+        if ($this->user->id && $this->user->username && $this->user->visible != 'never') {
             $um = new UserManagement($this->user->id);
             $um->changeUser(array('auth_user_md5.perms' => 'dozent'));
             $um->storeToDatabase();
