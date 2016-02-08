@@ -20,7 +20,7 @@
                 <? foreach ($rights->orderBy('mkdate desc') as $right): ?>
                     <?php if ($right->user) : ?>
                     <tr>
-                        <td><?= htmlReady($right->user->getFullname()) ?></td>
+                        <td><?= htmlReady($right->user->getFullname()) ?> (<?= htmlReady($right->user->username) ?>)</td>
                         <td><?= htmlReady($right->institute->name) ?></td>
                         <td><?= htmlReady($right->rights) ?></td>
                         <td><?= $right->getBeginMessage() ?></td>

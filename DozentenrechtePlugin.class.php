@@ -56,9 +56,6 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
             $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
             $navigation->addSubNavigation('search', $subnavigation);
         }
-
-        PageLayout::addStylesheet($this->getPluginURL() . '/assets/style.css');
-        PageLayout::addScript($this->getPluginURL() . '/assets/application.js');
     }
 
     public function perform($unconsumed_path) {
