@@ -28,9 +28,3 @@ STUDIP.Dozentenrechte = {
     }
 
 }
-$(function () {
-    $('.datepicker').datepicker();
-    $('.datepicker').on('focus', function(event, parameters) {
-        $(document).find('input[name="' + $(this).attr('name') + '_type"][value="1"]').attr('checked', true);
-    });
-});

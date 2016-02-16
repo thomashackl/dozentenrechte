@@ -29,6 +29,10 @@
                         <td><?= $right->getStatusMessage() ?></td>
                         <td>
                             <?= $right->verify ? "" : \Studip\Button::create(dgettext('dozentenrechte', 'Antrag zurückziehen'), 'reject', array('value' => $right->id)) ?>
+                            <?= $right->status == Dozentenrecht::NOTIFIED ?
+                                \Studip\LinkButton::create(dgettext('dozentenrechte', 'Rechte verlängern'),
+                                    $controller->url_for('show/new', $right->id),
+                                    array('value' => $right->id, 'data-dialog' => 'size=auto')) : '' ?>
                             <?= $GLOBALS['perm']->have_perm('root') ? \Studip\Button::create(dgettext('dozentenrechte', 'Antrag löschen'), 'reject', array('value' => $right->id)) : "" ?>
                         </td>
                     </tr>

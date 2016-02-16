@@ -6,7 +6,12 @@ class ShowController extends StudipController {
         $GLOBALS['perm']->check('dozent');
         $this->plugin = $this->dispatcher->plugin;
         $this->flash = Trails_Flash::instance();
-        $this->set_layout($GLOBALS['template_factory']->open('layouts/base_without_infobox'));
+        if (Request::isXhr()) {
+            $this->set_layout(null);
+            $this->response->add_header('Content-Type', 'text/html;charset=windows-1252');
+        } else {
+            $this->set_layout($GLOBALS['template_factory']->open('layouts/base_without_infobox'));
+        }
         $this->sidebar = Sidebar::get();
         $this->sidebar->setImage('sidebar/person-sidebar.png');
     }
@@ -15,62 +20,119 @@ class ShowController extends StudipController {
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFor_id($GLOBALS['user']->id));
     }
 
-    public function new_action() {
+    public function new_action($ref_id = '') {
         PageLayout::addScript($this->dispatcher->plugin->getPluginURL() . '/assets/application.js');
+
+        if (Request::isXhr()) {
+            $this->response->add_header('X-Title', dgettext('dozentenrechte', 'Rechte verlängern'));
+        }
+
+        if ($ref_id) {
+            $this->ref = Dozentenrecht::find($ref_id);
+        }
+
         if (Request::submitted('save')) {
 
             CSRFProtection::verifyUnsafeRequest();
 
-            //security checks
-            if (!Request::submitted('user')) {
-                $errorStack[] = dgettext('dozentenrechte',
-                    'Es wurde niemand angegeben, dem die Rechte erteilt werden sollen.');
+            if (!$ref_id) {
+                //security checks
+                if (!Request::submitted('user')) {
+                    $errorStack[] = dgettext('dozentenrechte',
+                        'Es wurde niemand angegeben, dem die Rechte erteilt werden sollen.');
+                }
+                if (!Request::get('inst')) {
+                    $errorStack[] = dgettext('dozentenrechte',
+                        'Es wurde keine Einrichtung angegeben, an denen die Rechte gelten sollen.');
+                } else if (!DozentenrechtePlugin::have_perm('root') && !$GLOBALS['perm']->have_studip_perm('dozent', Request::get('inst'))) {
+                    $inst = new Institute(Request::get('inst'));
+                    $errorStack[] = dgettext('dozentenrechte',
+                            'Sie haben keine Berechtigung an der Einrichtung') . ' ' .
+                        dgettext('dozentenrechte', ', Dozentenrechte zu beantragen');
+                }
+                if (Request::get('from_type') && !Request::get('from')) {
+                    $errorStack[] = dgettext('dozentenrechte',
+                        'Bitte geben Sie den Beginn der beantragten Rechte an.');
+                }
+                if (Request::get('to_type') && !Request::get('to')) {
+                    $errorStack[] = dgettext('dozentenrechte',
+                        'Bitte geben Sie das Ende der beantragten Rechte an.');
+                }
+                if (strtotime(Request::get('from')) > strtotime(Request::get('to'))) {
+                    $errorStack[] = dgettext('dozentenrechte',
+                        'Enddatum liegt vor Beginndatum.');
+                }
+                if (Request::get('to') && strtotime(Request::get('to')) < time()) {
+                    $errorStack[] = dgettext('dozentenrechte',
+                        'Ihr Antrag endet in der Vergangenheit.');
+                }
+            } else {
+                $ref = Dozentenrecht::find($ref_id);
+                if (Request::int('to_type') && strtotime(Request::get('to')) <= $ref->end) {
+                    $errorStack[] = sprintf(
+                        dgettext('dozentenrechte', 'Das Enddatum muss nach dem bereits vorgegebenen Enddatum (%s) liegen.'),
+                        date('d.m.Y', $ref->end)
+                    );
+                }
             }
-            if (!Request::get('inst')) {
-                $errorStack[] = dgettext('dozentenrechte',
-                    'Es wurde keine Einrichtung angegeben, an denen die Rechte gelten sollen.');
-            } else if (!DozentenrechtePlugin::have_perm('root') && !$GLOBALS['perm']->have_studip_perm('dozent', Request::get('inst'))) {
-                $inst = new Institute(Request::get('inst'));
-                $errorStack[] = dgettext('dozentenrechte',
-                    'Sie haben keine Berechtigung an der Einrichtung') . ' ' .
-                    dgettext('dozentenrechte', ', Dozentenrechte zu beantragen');
-            }
-            if (Request::get('from_type') && !Request::get('from')) {
-                $errorStack[] = dgettext('dozentenrechte',
-                    'Bitte geben Sie den Beginn der beantragten Rechte an.');
-            }
-            if (Request::get('to_type') && !Request::get('to')) {
-                $errorStack[] = dgettext('dozentenrechte',
-                    'Bitte geben Sie das Ende der beantragten Rechte an.');
-            }
-            if (strtotime(Request::get('from')) > strtotime(Request::get('to'))) {
-                $errorStack[] = dgettext('dozentenrechte',
-                    'Enddatum liegt vor Beginndatum.');
-            }
-            if (Request::get('to') && strtotime(Request::get('to')) < time()) {
-                $errorStack[] = dgettext('dozentenrechte',
-                    'Ihr Antrag endet in der Vergangenheit.');
-            }
+
             if ($errorStack) {
                 PageLayout::postError(dgettext('dozentenrechte',
                     'Bitte überprüfen sie ihren Antrag:'), $errorStack);
             } else {
                 // set rights
-                $users = Request::get('user') ? array(Request::get('user')) : Request::getArray('user');
-                foreach ($users as $user) {
-                    if ($user) {
-                        $right = new Dozentenrecht();
-                        $right->rights = Request::get('rights');
-                        $right->from_id = $GLOBALS['user']->id;
-                        $right->for_id = $user;
-                        $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;
-                        $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
-                        $right->institute_id = Request::get('inst');
-                        $right->store();
+                if ($ref_id) {
+                    $right = new Dozentenrecht();
+                    $right->rights = $ref->rights;
+                    $right->from_id = $GLOBALS['user']->id;
+                    $right->for_id = $ref->user->id;
+                    $right->begin = $ref->begin;
+                    $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
+                    $right->institute_id = $ref->institute->id;
+                    $right->ref_id = $ref->id;
+                    $right->store();
+                    if (DozentenrechtePlugin::have_perm('root')) {
+                        $right->verify();
+                    }
+                } else {
+                    $users = Request::get('user') ? array(Request::get('user')) : Request::getArray('user');
+                    foreach ($users as $user) {
+                        if ($user) {
+                            /*
+                             * Check if rights with overlapping time frame exists
+                             * which was requested by the same user.
+                             */
+                            $existing = Dozentenrecht::findOneBySQL(
+                                "`user_id`=:by AND `for_id`=:for
+                                    AND `institute_id`:inst
+                                    AND (`begin` BETWEEN :start AND :end
+                                        OR `end` BETWEEN :start AND :end)",
+                                array(
+                                    'by' => $GLOBALS['user']->id,
+                                    'for' => $user,
+                                    'institute_id' => Request::option('inst'),
+                                    'start' => Request::get('from_type') ? strtotime(Request::get('from')) : 0,
+                                    'end' => Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX
+                                ));
 
-                        // if a root user puts a request it is automaticly verified
-                        if (DozentenrechtePlugin::have_perm('root')) {
-                            $right->verify();
+                            $right = new Dozentenrecht();
+                            $right->rights = Request::get('rights');
+                            $right->from_id = $GLOBALS['user']->id;
+                            $right->for_id = $user;
+                            $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;
+                            $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
+                            $right->institute_id = Request::get('inst');
+
+                            if ($existing) {
+                                $right->ref_id = $existing['id'];
+                            }
+
+                            $right->store();
+
+                            // if a root user puts a request it is automaticly verified
+                            if (DozentenrechtePlugin::have_perm('root')) {
+                                $right->verify();
+                            }
                         }
                     }
                 }
@@ -86,11 +148,31 @@ class ShowController extends StudipController {
             });
         }
 
-        $this->userSearch = new PermissionSearch('user', 'Person hinzufügen', 'user_id',
+        $userSearch = new PermissionSearch('user', 'Person hinzufügen', 'user_id',
             array(
                 'permission' => array('user', 'autor', 'tutor', 'dozent'),
                 'exclude_user' => array()
             ));
+        $this->mps = MultiPersonSearch::get('add_dozentenrecht_' . $GLOBALS['user']->id)
+            ->setTitle(dgettext('dozentenrechte', 'Personen hinzufügen'))
+            ->setSearchObject($userSearch)
+            ->setDefaultSelectedUser(array_map(function ($u) { return $u->id; }, $users))
+            ->setExecuteURL($this->url_for('show/multipersonsearch'))
+            ->setLinkText(dgettext('dozentenrechte', 'Person(en) hinzufügen'))
+            ->setJSFunctionOnSubmit('STUDIP.Dozentenrechte.addPersons');
+        // Build quick selections.
+        if (count($this->institutes) > 0 && count($this->institutes) <= 4) {
+            foreach ($this->institutes as $i) {
+                $members = array_map(
+                    function ($m) { return $m->user_id; },
+                    array_filter(
+                        InstituteMember::findByInstituteAndStatus($i['Institut_id'], array('autor', 'tutor', 'dozent')),
+                        function ($m) { return $m->user_id != $GLOBALS['user']->id; }
+                    )
+                );
+                $this->mps->addQuickfilter($i['Name'], $members);
+            }
+        }
 
         $this->right = Request::option('right', 'dozent');
         $this->inst = Request::option('inst', '');
@@ -105,9 +187,13 @@ class ShowController extends StudipController {
         $this->set_layout(null);
     }
 
-    public function given_action() {
+    public function given_action($id = '') {
         $this->checkRejected();
-        $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
+        if ($id) {
+            $this->rights = SimpleCollection::createFromArray(array(Dozentenrecht::find($id)));
+        } else {
+            $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
+        }
     }
 
     public function accept_action() {

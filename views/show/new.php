@@ -1,4 +1,22 @@
-<form class="default" name="rightsform" method="post">
+<form class="default" name="rightsform" action="<?= $controller->url_for('show/new', $ref ? $ref->id : '') ?>" method="post">
+<?php if ($ref) : ?>
+    <section>
+        <b><?= $ref->rights == 'dozent' ? dgettext('dozentenrechte', 'Dozentenrechte') :
+            dgettext('dozentenrechte', 'Tutorrechte') ?></b>
+        <br/>
+        <?= dgettext('dozentenrechte', 'für') ?>
+        <br/>
+        <b><?= htmlReady($ref->user->getFullname()) ?></b>
+        <br/>
+        <?= dgettext('dozentenrechte', 'an der Einrichtung') ?>
+        <br/>
+        <b><?= htmlReady($ref->institute->name) ?></b>
+        <br/>
+        ab
+        <br/>
+        <?= date('d.m.Y', $ref->begin) ?>
+    </section>
+<?php else : ?>
     <header>
         <h1><?= dgettext('dozentenrechte', 'Neuen Dozentenrechteantrag stellen') ?></h1>
     </header>
@@ -27,14 +45,7 @@
                     <?php endforeach ?>
                     </ul>
                 <?php endif ?>
-                <?= MultiPersonSearch::get('add_dozentenrecht_' . $GLOBALS['user']->id)
-                    ->setTitle(dgettext('dozentenrechte', 'Personen hinzufügen'))
-                    ->setSearchObject($userSearch)
-                    ->setDefaultSelectedUser(array_map(function ($u) { return $u->id; }, $users))
-                    ->setExecuteURL($controller->url_for('show/multipersonsearch'))
-                    ->setLinkText(dgettext('dozentenrechte', 'Person(en) hinzufügen'))
-                    ->setJSFunctionOnSubmit('STUDIP.Dozentenrechte.addPersons')
-                    ->render() ?>
+                <?= $mps->render() ?>
             </label>
         </section>
         <section>
@@ -71,8 +82,9 @@
             </label>
         </section>
     </fieldset>
+<?php endif ?>
     <fieldset>
-        <legend><?= dgettext('dozentenrechte', 'Bis') ?></legend>
+        <legend><?= $ref ? dgettext('dozentenrechte', 'Verlängern bis') : dgettext('dozentenrechte', 'Bis') ?></legend>
         <section>
             <label>
                 <input type="radio" name="to_type" value="0"<?= $to ? '' : ' checked="checked"' ?>>
@@ -87,6 +99,14 @@
     </fieldset>
     <footer>
         <?= CSRFProtection::tokenTag() ?>
-        <?= \Studip\Button::createAccept(dgettext('dozentenrechte', 'Antrag stellen'), 'save') ?>
+        <?= \Studip\Button::createAccept(dgettext('dozentenrechte', 'Antrag stellen'), 'save', array('data-dialog-button' => true)) ?>
     </footer>
 </form>
+<script type="text/javascript">
+    //<!--
+    $('.datepicker').datepicker();
+    $('.datepicker').on('focus', function(event, parameters) {
+        $(document).find('input[name="' + $(this).attr('name') + '_type"][value="1"]').attr('checked', true);
+    });
+    //-->
+</script>

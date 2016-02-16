@@ -66,15 +66,38 @@ class Dozentenrecht extends SimpleORMap {
     public function verify($to = TRUE) {
         $this->verify = (int) $to;
         
-        // Send notification to users
-        $message = dgettext('dozentenrechte', 'Ihr Dozentenrechteantrag wurde bestätigt');
-        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show'), $message);
-        $message = sprintf(dgettext('dozentenrechte', 'Ihr Antrag auf erweiterte Rechte für %s (Kennung: %s) an der Einrichtung %s von %s bis %s wurde soeben bestätigt. %1$s kann nun als Dozent in die jeweiligen Veranstaltungen eingetragen werden.'), $this->user->getFullname(), $this->user->username, $this->institute->name, $this->getBeginMessage(), $this->getEndMessage());
-        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $message);
+        // Extend existing rights.
+        if ($this->ref_id) {
+            // Send notification to users
+            $for_message = sprintf(dgettext('dozentenrechte',
+                'Ihre erweiterten Rechte an der Einrichtung %s wurden verlängert.'),
+                $this->institute->name);
+            $by_message = sprintf(dgettext('dozentenrechte',
+                'Ihr Antrag auf Verlängerung der erweiterten Rechte von %s (%s) an der Einrichtung %s bis %s wurde soeben bestätigt.'),
+                $this->user->getFullname(), $this->user->username, $this->institute->name, $this->getEndMessage());
 
-        // Check if they need to be activated
-        $this->work();
-        $this->store();
+            $ref = Dozentenrecht::find($this->ref_id);
+            $ref->end = $this->end;
+            $ref->status = self::STARTED;
+            $ref->work();
+            $ref->store();
+            $this->delete();
+        // New application for rights.
+        } else {
+            // Send notification to users
+            $for_message = sprintf(dgettext('dozentenrechte',
+                'Ihr Antrag auf erweiterte Rechte an der Einrichtung %s wurde bestätigt.'),
+                $this->institute->name);
+            $by_message = sprintf(dgettext('dozentenrechte',
+                'Ihr Antrag auf erweiterte Rechte für %s (%s) an der Einrichtung %s von %s bis %s wurde soeben bestätigt.'),
+                $this->user->getFullname(), $this->user->username, $this->institute->name, $this->getBeginMessage(), $this->getEndMessage());
+            // Check if they need to be activated
+            $this->work();
+            $this->store();
+        }
+        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show'), $for_message, '', Icon::create('roles2', 'clickable'));
+        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $by_message, '', Icon::create('roles2', 'clickable'));
+
     }
     
     public function getEndMessage($style = 'd.m.Y') {
@@ -132,19 +155,26 @@ class Dozentenrecht extends SimpleORMap {
         $this->store();
     }
 
-    private function notify() {
+    public function notify() {
         if ($this->status == self::STARTED) {
-            $msg = new messaging();
 
             // message for the expiring user
-            $message = dgettext('dozentenrechte', 'Ihr Dozentenrechteantrag endet in Kürze');
-            PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show'), $message);
-            //$msg->insert_message($message, get_username($this->for_id), "____%system%____", FALSE, FALSE, "1", FALSE, dgettext('dozentenrechte', "Systemnachricht:") . " " . dgettext('dozentenrechte', "Dozentenrechte"), TRUE);
+            $message = sprintf(dgettext('dozentenrechte',
+                'Ihr Antrag auf erweiterte Rechte an der Einrichtung %s endet in Kürze.'),
+                $this->institute->name);
+            PersonalNotifications::add($this->for_id,
+                PluginEngine::GetURL('dozentenrechteplugin',
+                array('id' => $this->id), 'show'), $message, '',
+                Icon::create('roles2', 'clickable'));
 
             // message for the user that gave the request for the expiring user
-            $message = dgettext('dozentenrechte', 'Ein von Ihnen gestellter Dozentenrechteantrag endet in Kürze');
-            PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $message);
-            //$msg->insert_message($message, get_username($this->from_id), "____%system%____", FALSE, FALSE, "1", FALSE, dgettext('dozentenrechte', "Systemnachricht:") . " " . dgettext('dozentenrechte', "Dozentenrechte"), TRUE);
+            $message = sprintf(dgettext('dozentenrechte',
+                'Ein von Ihnen gestellter Antrag auf erweiterte Rechte für %s (%s) an der Einrichtung %s endet in Kürze.'),
+                $this->user->getFullname(), $this->user->username, $this->institute->name);
+            PersonalNotifications::add($this->from_id,
+                PluginEngine::GetURL('dozentenrechteplugin',
+                array('id' => $this->id), 'show/given'), $message, '',
+                Icon::create('roles2', 'clickable'));
 
             $this->status = self::NOTIFIED;
             $this->store();
