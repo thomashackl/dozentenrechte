@@ -11,8 +11,7 @@ STUDIP.Dozentenrechte = {
                 if ($('li#rights_added_user_' + $(this).val()).length == 0) {
                     var li = $('<li>').
                         attr('id', 'rights_added_user_' + $(this).val());
-                    li.append($('div.mpscontainer form option[value="' + $(this).val() + '"]').
-                        html().replace(/\r?\n(.)*\(/g, '('));
+                    li.append($(this).text().replace(/(.+, .+)\r?\n(.*) (\(.+\))/, '\$1 \$3'));
                     var userid = $('<input>').
                         attr('type', 'hidden').
                         attr('name', 'user[]').

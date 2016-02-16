@@ -1,4 +1,4 @@
-<? if ($rights): ?>
+<? if (count($rights) > 0): ?>
     <form method="post">   
         <table class="default">
             <caption>
@@ -31,5 +31,5 @@
         </table>
     </form> 
 <? else: ?>
-    <?= dgettext('dozentenrechte', 'Es liegen keine Anträge für Sie vor') ?>
+    <?= PageLayout::postInfo(dgettext('dozentenrechte', 'Es wurden keine Daten gefunden.')) ?>
 <? endif; ?>

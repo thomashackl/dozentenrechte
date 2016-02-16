@@ -49,5 +49,5 @@
         </table>
     </form> 
 <? else: ?>
-    <?= dgettext('dozentenrechte', 'Es liegen keine Anträge vor') ?>
+    <?= PageLayout::postInfo(dgettext('dozentenrechte', 'Es liegen keine Anträge vor')) ?>
 <? endif; ?>

@@ -107,14 +107,14 @@ class ShowController extends StudipController {
                              * which was requested by the same user.
                              */
                             $existing = Dozentenrecht::findOneBySQL(
-                                "`user_id`=:by AND `for_id`=:for
-                                    AND `institute_id`:inst
+                                "`from_id`=:by AND `for_id`=:for
+                                    AND `institute_id` = :inst
                                     AND (`begin` BETWEEN :start AND :end
                                         OR `end` BETWEEN :start AND :end)",
                                 array(
                                     'by' => $GLOBALS['user']->id,
                                     'for' => $user,
-                                    'institute_id' => Request::option('inst'),
+                                    'inst' => Request::option('inst'),
                                     'start' => Request::get('from_type') ? strtotime(Request::get('from')) : 0,
                                     'end' => Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX
                                 ));
@@ -152,6 +152,14 @@ class ShowController extends StudipController {
             });
         }
 
+        $this->right = Request::option('right', 'dozent');
+        $this->inst = Request::option('inst', '');
+        $this->users = User::findMany(Request::optionArray('user', array()));
+        $this->from_type = Request::int('from_type', 0);
+        $this->from = Request::get('from', '');
+        $this->to_type = Request::int('to_type', 0);
+        $this->to = Request::get('to', '');
+
         $userSearch = new PermissionSearch('user', 'Person hinzufügen', 'user_id',
             array(
                 'permission' => array('user', 'autor', 'tutor', 'dozent'),
@@ -160,7 +168,7 @@ class ShowController extends StudipController {
         $this->mps = MultiPersonSearch::get('add_dozentenrecht_' . $GLOBALS['user']->id)
             ->setTitle(dgettext('dozentenrechte', 'Personen hinzufügen'))
             ->setSearchObject($userSearch)
-            ->setDefaultSelectedUser(array_map(function ($u) { return $u->id; }, $users))
+            ->setDefaultSelectedUser(array_map(function ($u) { return $u->id; }, $this->users))
             ->setExecuteURL($this->url_for('show/multipersonsearch'))
             ->setLinkText(dgettext('dozentenrechte', 'Person(en) hinzufügen'))
             ->setJSFunctionOnSubmit('STUDIP.Dozentenrechte.addPersons');
@@ -178,47 +186,50 @@ class ShowController extends StudipController {
             }
         }
 
-        $this->right = Request::option('right', 'dozent');
-        $this->inst = Request::option('inst', '');
-        $this->users = User::findMany(Request::optionArray('user', array()));
-        $this->from_type = Request::int('from_type', 0);
-        $this->from = Request::get('from', '');
-        $this->to_type = Request::int('to_type', 0);
-        $this->to = Request::get('to', '');
     }
 
     public function userinput_action() {
         $this->set_layout(null);
     }
 
-    public function given_action($id = '', $showall = false) {
+    public function given_action($status = 1, $id = '') {
         $this->checkRejected();
 
         Navigation::activateItem('/tools/dozentenrechteplugin/given');
 
         $vw = new ViewsWidget();
-        $vw->addLink(dgettext('dozentenrechte', 'Nur aktuelle Rechte anzeigen'), $this->url_for('show/given'))
-            ->setActive(!$id && !$showall);
-        $vw->addLink(dgettext('dozentenrechte', 'Auch abgelaufene Rechte anzeigen'), $this->url_for('show/given', 0, true))
-            ->setActive(!$id && $showall);
+        $vw->addLink(dgettext('dozentenrechte', 'Nur offene Anträge anzeigen'), $this->url_for('show/given', Dozentenrecht::NOT_STARTED))
+            ->setActive(!$id && $status == Dozentenrecht::NOT_STARTED);
+        $vw->addLink(dgettext('dozentenrechte', 'Nur auslaufende Rechte anzeigen'), $this->url_for('show/given', Dozentenrecht::NOTIFIED))
+            ->setActive(!$id && $status == Dozentenrecht::NOTIFIED);
+        $vw->addLink(dgettext('dozentenrechte', 'Nur laufende Rechte anzeigen'), $this->url_for('show/given', Dozentenrecht::STARTED))
+            ->setActive(!$id && $status == Dozentenrecht::STARTED);
+        $vw->addLink(dgettext('dozentenrechte', 'Nur abgelaufene Rechte anzeigen'), $this->url_for('show/given', Dozentenrecht::FINISHED))
+            ->setActive(!$id && $status == Dozentenrecht::FINISHED);
+        $vw->addLink(dgettext('dozentenrechte', 'Alle meine Anträge anzeigen'), $this->url_for('show/given', 99))
+            ->setActive(!$id && $status == 99);
 
+        // Single ID given, load only this one right.
         if ($id) {
             $dr = Dozentenrecht::find($id);
+            // Check if application may be seen by current user.
             if ($dr && (DozentenrechtePlugin::have_perm('root') || in_array($GLOBALS['user']->id, array($dr->from_id, $dr->for_id)))) {
                 $this->rights = SimpleCollection::createFromArray(array(Dozentenrecht::find($id)));
                 $vw->addLink(dgettext('dozentenrechte', 'Einzelnen Antrag anzeigen'), $this->url_for('show/given', $id))
                     ->setActive($id ? true : false);
+            // No access.
             } else {
                 PageLayout::postError(dgettext('dozentenrechte',
                     'Der angegebene Eintrag wurde nicht gefunden, oder Sie '.
                     'haben nicht die nötigen Rechte, um darauf zuzugreifen.'));
                 $this->relocate('show/given');
             }
+        // Show all rights (filtered by given status)
         } else {
             $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
-            if (!$showall) {
-                $this->rights = $this->rights->filter(function($r) {
-                    return $r->status < Dozentenrecht::FINISHED;
+            if ($status != 99) {
+                $this->rights = $this->rights->filter(function($r) use ($status) {
+                    return $r->status == $status;
                 });
             }
         }

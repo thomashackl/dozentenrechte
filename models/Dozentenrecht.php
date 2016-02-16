@@ -81,6 +81,7 @@ class Dozentenrecht extends SimpleORMap {
             $ref->status = self::STARTED;
             $ref->work();
             $ref->store();
+            $id = $this->ref_id;
             $this->delete();
         // New application for rights.
         } else {
@@ -94,9 +95,10 @@ class Dozentenrecht extends SimpleORMap {
             // Check if they need to be activated
             $this->work();
             $this->store();
+            $id = $this->id;
         }
-        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show'), $for_message, '', Icon::create('roles2', 'clickable'));
-        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given'), $by_message, '', Icon::create('roles2', 'clickable'));
+        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/'.$id), $for_message, '', Icon::create('roles2', 'clickable'));
+        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given/all/'.$id), $by_message, '', Icon::create('roles2', 'clickable'));
 
     }
     
@@ -164,7 +166,7 @@ class Dozentenrecht extends SimpleORMap {
                 $this->institute->name);
             PersonalNotifications::add($this->for_id,
                 PluginEngine::GetURL('dozentenrechteplugin',
-                array('id' => $this->id), 'show'), $message, '',
+                array(), 'show/'.$this->id), $message, '',
                 Icon::create('roles2', 'clickable'));
 
             // message for the user that gave the request for the expiring user
@@ -173,7 +175,7 @@ class Dozentenrecht extends SimpleORMap {
                 $this->user->getFullname(), $this->user->username, $this->institute->name);
             PersonalNotifications::add($this->from_id,
                 PluginEngine::GetURL('dozentenrechteplugin',
-                array('id' => $this->id), 'show/given'), $message, '',
+                array(), 'show/given/all/'.$this->id), $message, '',
                 Icon::create('roles2', 'clickable'));
 
             $this->status = self::NOTIFIED;
