@@ -17,10 +17,14 @@ class ShowController extends StudipController {
     }
 
     public function index_action() {
+        Navigation::activateItem('/tools/dozentenrechteplugin/self');
+
         $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFor_id($GLOBALS['user']->id));
     }
 
     public function new_action($ref_id = '') {
+        Navigation::activateItem('/tools/dozentenrechteplugin/new');
+
         PageLayout::addScript($this->dispatcher->plugin->getPluginURL() . '/assets/application.js');
 
         if (Request::isXhr()) {
@@ -187,17 +191,46 @@ class ShowController extends StudipController {
         $this->set_layout(null);
     }
 
-    public function given_action($id = '') {
+    public function given_action($id = '', $showall = false) {
         $this->checkRejected();
+
+        Navigation::activateItem('/tools/dozentenrechteplugin/given');
+
+        $vw = new ViewsWidget();
+        $vw->addLink(dgettext('dozentenrechte', 'Nur aktuelle Rechte anzeigen'), $this->url_for('show/given'))
+            ->setActive(!$id && !$showall);
+        $vw->addLink(dgettext('dozentenrechte', 'Auch abgelaufene Rechte anzeigen'), $this->url_for('show/given', 0, true))
+            ->setActive(!$id && $showall);
+
         if ($id) {
-            $this->rights = SimpleCollection::createFromArray(array(Dozentenrecht::find($id)));
+            $dr = Dozentenrecht::find($id);
+            if ($dr && (DozentenrechtePlugin::have_perm('root') || in_array($GLOBALS['user']->id, array($dr->from_id, $dr->for_id)))) {
+                $this->rights = SimpleCollection::createFromArray(array(Dozentenrecht::find($id)));
+                $vw->addLink(dgettext('dozentenrechte', 'Einzelnen Antrag anzeigen'), $this->url_for('show/given', $id))
+                    ->setActive($id ? true : false);
+            } else {
+                PageLayout::postError(dgettext('dozentenrechte',
+                    'Der angegebene Eintrag wurde nicht gefunden, oder Sie '.
+                    'haben nicht die nötigen Rechte, um darauf zuzugreifen.'));
+                $this->relocate('show/given');
+            }
         } else {
             $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFrom_id($GLOBALS['user']->id));
+            if (!$showall) {
+                $this->rights = $this->rights->filter(function($r) {
+                    return $r->status < Dozentenrecht::FINISHED;
+                });
+            }
         }
+
+        $this->sidebar->addWidget($vw);
     }
 
     public function accept_action() {
         DozentenrechtePlugin::check('root');
+
+        Navigation::activateItem('/tools/dozentenrechteplugin/accept');
+
         if (Request::submitted('accept')) {
             $rights = SimpleORMapCollection::createFromArray(Dozentenrecht::findMany(array_keys(Request::getArray('verify'))));
             $rights->verify();
@@ -207,6 +240,9 @@ class ShowController extends StudipController {
 
     public function search_action() {
         DozentenrechtePlugin::check('root');
+
+        Navigation::activateItem('/tools/dozentenrechteplugin/search');
+
         $this->checkEnded();
         $sql = "SELECT d.* FROM dozentenrechte d
             JOIN auth_user_md5 a ON (for_id = user_id) 

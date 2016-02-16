@@ -20,12 +20,39 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
         // Localization
         bindtextdomain('dozentenrechte', __DIR__ . '/locale');
         if ($this->have_perm('dozent')) {
-            $navigation = new AutoNavigation(dgettext('dozentenrechte', 'Dozentenrechte'));
+            $navigation = new Navigation(dgettext('dozentenrechte', 'Dozentenrechte'));
             if ($this->have_perm('root')) {
                 $navigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
             } else {
                 $navigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
             }
+
+            if ($this->have_perm('root')) {
+                $subnavigation = new Navigation(dgettext('dozentenrechte', 'Anträge bestätigen'));
+                $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
+                $navigation->addSubNavigation('accept', $subnavigation);
+            }
+
+            if (!$GLOBALS['perm']->have_perm('admin')) {
+                $subnavigation = new Navigation(dgettext('dozentenrechte', 'Für mich gestellte Anträge'));
+                $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
+                $navigation->addSubNavigation('self', $subnavigation);
+            }
+
+            $subnavigation = new Navigation(dgettext('dozentenrechte', 'Von mir gestellte Anträge'));
+            $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/given'));
+            $navigation->addSubNavigation('given', $subnavigation);
+
+            $subnavigation = new Navigation(dgettext('dozentenrechte', 'Neuer Antrag'));
+            $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/new'));
+            $navigation->addSubNavigation('new', $subnavigation);
+
+            if ($this->have_perm('root')) {
+                $subnavigation = new Navigation(dgettext('dozentenrechte', 'Suche'));
+                $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
+                $navigation->addSubNavigation('search', $subnavigation);
+            }
+
             Navigation::addItem('tools/dozentenrechteplugin', $navigation);
         }
     }
@@ -33,29 +60,6 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
     public function initialize() {
         $navigation = Navigation::getItem('tools/dozentenrechteplugin');
 
-        if ($this->have_perm('root')) {
-            $subnavigation = new AutoNavigation(dgettext('dozentenrechte', 'Anträge bestätigen'));
-            $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
-            $navigation->addSubNavigation('accept', $subnavigation);
-        }
-
-        $subnavigation = new AutoNavigation(dgettext('dozentenrechte', 'Für mich gestellte Anträge'));
-        $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
-        $navigation->addSubNavigation('self', $subnavigation);
-
-        $subnavigation = new AutoNavigation(dgettext('dozentenrechte', 'Von mir gestellte Anträge'));
-        $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/given'));
-        $navigation->addSubNavigation('given', $subnavigation);
-
-        $subnavigation = new AutoNavigation(dgettext('dozentenrechte', 'Neuer Antrag'));
-        $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/new'));
-        $navigation->addSubNavigation('new', $subnavigation);
-
-        if ($this->have_perm('root')) {
-            $subnavigation = new AutoNavigation(dgettext('dozentenrechte', 'Suche'));
-            $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
-            $navigation->addSubNavigation('search', $subnavigation);
-        }
     }
 
     public function perform($unconsumed_path) {
