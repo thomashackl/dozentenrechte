@@ -11,14 +11,14 @@ msgstr ""
 "PO-Revision-Date: 2016-02-17 12:47+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "X-Generator: Poedit 1.8.7\n"
 
 #: controllers/show.php:31 views/show/given.php:33
-msgid "Rechte verlÃ¤ngern"
+msgid "Rechte verlängern"
 msgstr "Extend rights"
 
 #: controllers/show.php:46
@@ -33,7 +33,7 @@ msgstr ""
 
 #: controllers/show.php:54
 msgid "Sie haben keine Berechtigung an der Einrichtung"
-msgstr "You donâ€™t have the necessary permission at the institution"
+msgstr "You don't have the necessary permission at the institution"
 
 #: controllers/show.php:55
 msgid ", Dozentenrechte zu beantragen"
@@ -61,19 +61,19 @@ msgid "Das Enddatum muss nach dem bereits vorgegebenen Enddatum (%s) liegen."
 msgstr "End date must be after the already given end date (%s)."
 
 #: controllers/show.php:85
-msgid "Bitte Ã¼berprÃ¼fen sie ihren Antrag:"
+msgid "Bitte überprüfen sie ihren Antrag:"
 msgstr "Please check your application:"
 
 #: controllers/show.php:169
-msgid "Personen hinzufÃ¼gen"
+msgid "Personen hinzufügen"
 msgstr "Add persons"
 
 #: controllers/show.php:173
-msgid "Person(en) hinzufÃ¼gen"
+msgid "Person(en) hinzufügen"
 msgstr "Add person(s)"
 
 #: controllers/show.php:201
-msgid "Nur offene AntrÃ¤ge anzeigen"
+msgid "Nur offene Anträge anzeigen"
 msgstr "Show only open applications"
 
 #: controllers/show.php:203
@@ -89,7 +89,7 @@ msgid "Nur abgelaufene Rechte anzeigen"
 msgstr "Show only expired rights"
 
 #: controllers/show.php:209
-msgid "Alle meine AntrÃ¤ge anzeigen"
+msgid "Alle meine Anträge anzeigen"
 msgstr "Show all my applications"
 
 #: controllers/show.php:218
@@ -99,9 +99,9 @@ msgstr "Show single application"
 #: controllers/show.php:223
 msgid ""
 "Der angegebene Eintrag wurde nicht gefunden, oder Sie haben nicht die "
-"nÃ¶tigen Rechte, um darauf zuzugreifen."
+"nötigen Rechte, um darauf zuzugreifen."
 msgstr ""
-"The given entry was not found, or you donâ€™t have the necessary permission to "
+"The given entry was not found, or you don't have the necessary permission to "
 "access the data."
 
 #: DozentenrechteCronjob.php:9 DozentenrechtePlugin.class.php:23
@@ -118,15 +118,15 @@ msgid "Sollen Ausgaben erzeugt werden"
 msgstr "Generate output"
 
 #: DozentenrechtePlugin.class.php:31
-msgid "AntrÃ¤ge bestÃ¤tigen"
+msgid "Anträge bestätigen"
 msgstr "Confirm applications"
 
 #: DozentenrechtePlugin.class.php:37
-msgid "FÃ¼r mich gestellte AntrÃ¤ge"
+msgid "Für mich gestellte Anträge"
 msgstr "Applications filed for me"
 
 #: DozentenrechtePlugin.class.php:42
-msgid "Von mir gestellte AntrÃ¤ge"
+msgid "Von mir gestellte Anträge"
 msgstr "Applications filed by me"
 
 #: DozentenrechtePlugin.class.php:46
@@ -142,11 +142,11 @@ msgid "Wartend"
 msgstr "Waiting"
 
 #: models/Dozentenrecht.php:56
-msgid "BestÃ¤tigt"
+msgid "Bestätigt"
 msgstr "Confirmed"
 
 #: models/Dozentenrecht.php:58
-msgid "LÃ¤uft"
+msgid "Läuft"
 msgstr "Running"
 
 #: models/Dozentenrecht.php:60
@@ -159,21 +159,21 @@ msgstr "Expired"
 
 #: models/Dozentenrecht.php:73
 #, php-format
-msgid "Ihre erweiterten Rechte an der Einrichtung %s wurden verlÃ¤ngert."
+msgid "Ihre erweiterten Rechte an der Einrichtung %s wurden verlängert."
 msgstr "Your rights at the institution %s have been extended."
 
 #: models/Dozentenrecht.php:76
 #, php-format
 msgid ""
-"Ihr Antrag auf VerlÃ¤ngerung der erweiterten Rechte von %s (%s) an der "
-"Einrichtung %s bis %s wurde soeben bestÃ¤tigt."
+"Ihr Antrag auf Verlängerung der erweiterten Rechte von %s (%s) an der "
+"Einrichtung %s bis %s wurde soeben bestätigt."
 msgstr ""
 "Your application for extending the rights of %s (%s) at the institution %s "
 "until %s has just been confirmed."
 
 #: models/Dozentenrecht.php:90
 #, php-format
-msgid "Ihr Antrag auf erweiterte Rechte an der Einrichtung %s wurde bestÃ¤tigt."
+msgid "Ihr Antrag auf erweiterte Rechte an der Einrichtung %s wurde bestätigt."
 msgstr ""
 "Your application for extended rights at the institution %s has been "
 "confirmed."
@@ -181,8 +181,8 @@ msgstr ""
 #: models/Dozentenrecht.php:93
 #, php-format
 msgid ""
-"Ihr Antrag auf erweiterte Rechte fÃ¼r %s (%s) an der Einrichtung %s von %s "
-"bis %s wurde soeben bestÃ¤tigt."
+"Ihr Antrag auf erweiterte Rechte für %s (%s) an der Einrichtung %s von %s "
+"bis %s wurde soeben bestätigt."
 msgstr ""
 "Your extended rights application for %s (%s) at the institution %s, running "
 "from %s to %s has been confirmed."
@@ -194,21 +194,21 @@ msgstr "Unlimited"
 
 #: models/Dozentenrecht.php:165
 #, php-format
-msgid "Ihr Antrag auf erweiterte Rechte an der Einrichtung %s endet in KÃ¼rze."
+msgid "Ihr Antrag auf erweiterte Rechte an der Einrichtung %s endet in Kürze."
 msgstr "Your extended rights at the institution %s will soon end."
 
 #: models/Dozentenrecht.php:174
 #, php-format
 msgid ""
-"Ein von Ihnen gestellter Antrag auf erweiterte Rechte fÃ¼r %s (%s) an der "
-"Einrichtung %s endet in KÃ¼rze."
+"Ein von Ihnen gestellter Antrag auf erweiterte Rechte für %s (%s) an der "
+"Einrichtung %s endet in Kürze."
 msgstr ""
 "An extended rights application for %s (%s) at the institution %s will soon "
 "end."
 
 #: views/show/accept.php:5 views/show/given.php:5 views/show/index.php:5
 #: views/show/search.php:9
-msgid "Gestellte DozentenantrÃ¤ge"
+msgid "Gestellte Dozentenanträge"
 msgstr "Filed applications"
 
 #: views/show/accept.php:9 views/show/index.php:9
@@ -216,7 +216,7 @@ msgid "Gestellt von"
 msgstr "Filed by"
 
 #: views/show/accept.php:10 views/show/search.php:14
-msgid "FÃ¼r"
+msgid "Für"
 msgstr "for"
 
 #: views/show/accept.php:11 views/show/given.php:10 views/show/index.php:10
@@ -245,19 +245,19 @@ msgid "Antragsdatum"
 msgstr "Date of application"
 
 #: views/show/accept.php:16
-msgid "BestÃ¤tigen"
+msgid "Bestätigen"
 msgstr "Confirm"
 
 #: views/show/accept.php:40
-msgid "Markierte bestÃ¤tigen"
+msgid "Markierte bestätigen"
 msgstr "Confirm selected"
 
 #: views/show/accept.php:47 views/show/search.php:52
-msgid "Es liegen keine AntrÃ¤ge vor"
+msgid "Es liegen keine Anträge vor"
 msgstr "There are no applications"
 
 #: views/show/given.php:9
-msgid "Antrag fÃ¼r"
+msgid "Antrag für"
 msgstr "Application for"
 
 #: views/show/given.php:15 views/show/index.php:15 views/show/search.php:20
@@ -269,11 +269,11 @@ msgid "Aktion"
 msgstr "Action"
 
 #: views/show/given.php:31
-msgid "Antrag zurÃ¼ckziehen"
+msgid "Antrag zurückziehen"
 msgstr "Cancel application"
 
 #: views/show/given.php:36 views/show/search.php:41
-msgid "Antrag lÃ¶schen"
+msgid "Antrag löschen"
 msgstr "Delete application"
 
 #: views/show/given.php:45 views/show/index.php:34
@@ -285,7 +285,7 @@ msgid "Tutorrechte"
 msgstr "Tutor rights"
 
 #: views/show/new.php:7 views/show/new.php:37
-msgid "fÃ¼r"
+msgid "für"
 msgstr "for"
 
 #: views/show/new.php:11 views/show/new.php:53
@@ -301,7 +301,7 @@ msgid "Personen und Einrichtung"
 msgstr "Persons and institution"
 
 #: views/show/new.php:56
-msgid "bitte auswÃ¤hlen"
+msgid "bitte auswählen"
 msgstr "please choose"
 
 #: views/show/new.php:76
@@ -317,7 +317,7 @@ msgid "Datum"
 msgstr "Date"
 
 #: views/show/new.php:87
-msgid "VerlÃ¤ngern bis"
+msgid "Verlängern bis"
 msgstr "Extend until"
 
 #: views/show/new.php:95
