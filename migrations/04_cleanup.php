@@ -14,8 +14,6 @@ class Cleanup extends DBMigration {
             GROUP BY `from_id`, `for_id`, `institute_id`
             HAVING applications > 1");
 
-        $stmt = DBManager::get()->prepare();
-
         foreach ($duplicates as $d) {
             $entries = DBManager::get()->fetchAll("SELECT *
                 FROM `dozentenrechte`
