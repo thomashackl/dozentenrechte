@@ -98,7 +98,7 @@ class Dozentenrecht extends SimpleORMap {
             $id = $this->id;
         }
         PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/'.$id), $for_message, '', Icon::create('roles2', 'clickable'));
-        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given/all/'.$id), $by_message, '', Icon::create('roles2', 'clickable'));
+        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given/1/'.$id), $by_message, '', Icon::create('roles2', 'clickable'));
 
     }
     
@@ -175,7 +175,7 @@ class Dozentenrecht extends SimpleORMap {
                 $this->user->getFullname(), $this->user->username, $this->institute->name);
             PersonalNotifications::add($this->from_id,
                 PluginEngine::GetURL('dozentenrechteplugin',
-                array(), 'show/given/all/'.$this->id), $message, '',
+                array(), 'show/given/1/'.$this->id), $message, '',
                 Icon::create('roles2', 'clickable'));
 
             $this->status = self::NOTIFIED;

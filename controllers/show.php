@@ -16,10 +16,32 @@ class ShowController extends StudipController {
         $this->sidebar->setImage('sidebar/person-sidebar.png');
     }
 
-    public function index_action() {
+    public function index_action($id = '') {
         Navigation::activateItem('/tools/dozentenrechteplugin/self');
 
-        $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFor_id($GLOBALS['user']->id));
+        if ($id) {
+            $dr = Dozentenrecht::find($id);
+            // Check if application may be seen by current user.
+            if ($dr && (DozentenrechtePlugin::have_perm('root') || in_array($GLOBALS['user']->id, array($dr->from_id, $dr->for_id)))) {
+
+                $vw = new ViewsWidget();
+                $vw->addLink(dgettext('dozentenrechte', 'Alle für mich gestellten Anträge anzeigen'), $this->url_for('show/index'))
+                    ->setActive($id ? false : true);
+                $vw->addLink(dgettext('dozentenrechte', 'Einzelnen Antrag anzeigen'), $this->url_for('show/index', $id))
+                    ->setActive($id ? true : false);
+
+                $this->rights = SimpleCollection::createFromArray(array($dr));
+            // No access.
+            } else {
+                PageLayout::postError(dgettext('dozentenrechte',
+                    'Der angegebene Eintrag wurde nicht gefunden, oder Sie '.
+                    'haben nicht die nötigen Rechte, um darauf zuzugreifen.'));
+                $this->relocate('show');
+            }
+            $this->rights = SimpleCollection::createFromArray(Dozentenrecht::find($id));
+        } else {
+            $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFor_id($GLOBALS['user']->id));
+        }
     }
 
     public function new_action($ref_id = '') {
@@ -214,7 +236,7 @@ class ShowController extends StudipController {
             $dr = Dozentenrecht::find($id);
             // Check if application may be seen by current user.
             if ($dr && (DozentenrechtePlugin::have_perm('root') || in_array($GLOBALS['user']->id, array($dr->from_id, $dr->for_id)))) {
-                $this->rights = SimpleCollection::createFromArray(array(Dozentenrecht::find($id)));
+                $this->rights = SimpleCollection::createFromArray(array($dr));
                 $vw->addLink(dgettext('dozentenrechte', 'Einzelnen Antrag anzeigen'), $this->url_for('show/given', $id))
                     ->setActive($id ? true : false);
             // No access.
