@@ -97,7 +97,7 @@ class Dozentenrecht extends SimpleORMap {
             $this->store();
             $id = $this->id;
         }
-        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/'.$id), $for_message, '', Icon::create('roles2', 'clickable'));
+        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/index/'.$id), $for_message, '', Icon::create('roles2', 'clickable'));
         PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given/1/'.$id), $by_message, '', Icon::create('roles2', 'clickable'));
 
     }
@@ -166,7 +166,7 @@ class Dozentenrecht extends SimpleORMap {
                 $this->institute->name);
             PersonalNotifications::add($this->for_id,
                 PluginEngine::GetURL('dozentenrechteplugin',
-                array(), 'show/'.$this->id), $message, '',
+                array(), 'show/index/'.$this->id), $message, '',
                 Icon::create('roles2', 'clickable'));
 
             // message for the user that gave the request for the expiring user

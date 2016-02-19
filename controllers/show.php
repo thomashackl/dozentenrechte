@@ -22,7 +22,7 @@ class ShowController extends StudipController {
         if ($id) {
             $dr = Dozentenrecht::find($id);
             // Check if application may be seen by current user.
-            if ($dr && (DozentenrechtePlugin::have_perm('root') || in_array($GLOBALS['user']->id, array($dr->from_id, $dr->for_id)))) {
+            if ($dr && (DozentenrechtePlugin::have_perm('root') || $GLOBALS['user']->id == $dr->for_id)) {
 
                 $vw = new ViewsWidget();
                 $vw->addLink(dgettext('dozentenrechte', 'Alle für mich gestellten Anträge anzeigen'), $this->url_for('show/index'))
@@ -38,7 +38,6 @@ class ShowController extends StudipController {
                     'haben nicht die nötigen Rechte, um darauf zuzugreifen.'));
                 $this->relocate('show');
             }
-            $this->rights = SimpleCollection::createFromArray(Dozentenrecht::find($id));
         } else {
             $this->rights = SimpleCollection::createFromArray(Dozentenrecht::findByFor_id($GLOBALS['user']->id));
         }
