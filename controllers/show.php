@@ -115,12 +115,18 @@ class ShowController extends StudipController {
                     $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
                     $right->institute_id = $ref->institute->id;
                     $right->ref_id = $ref->id;
-                    $right->store();
+                    if ($right->store()) {
+                        PageLayout::postSuccess(dgettext('dozentenrechte', 'Ihr Antrag wurde gespeichert.'));
+                    } else {
+                        PageLayout::postError(dgettext('dozentenrechte', 'Ihr Antrag konnte nicht gespeichert werden.'));
+                    }
                     if (DozentenrechtePlugin::have_perm('root')) {
                         $right->verify();
                     }
                 } else {
                     $users = Request::get('user') ? array(Request::get('user')) : Request::getArray('user');
+                    $success = array();
+                    $error = array();
                     foreach ($users as $user) {
                         if ($user) {
                             /*
@@ -152,7 +158,11 @@ class ShowController extends StudipController {
                                 $right->ref_id = $existing['id'];
                             }
 
-                            $right->store();
+                            if ($right->store()) {
+                                $success[] = $user;
+                            } else {
+                                $error[] = $user;
+                            }
 
                             // if a root user puts a request it is automaticly verified
                             if (DozentenrechtePlugin::have_perm('root')) {
@@ -162,7 +172,23 @@ class ShowController extends StudipController {
                     }
                 }
 
-                $this->redirect('show/given');
+                if (count($success)) {
+                    PageLayout::postSuccess(dngettext('dozentenrechte',
+                        'Ihr Antrag wurde gespeichert.',
+                        sprintf('%s Anträge wurden gespeichert.', count($success)),
+                        count($success)),
+                    array_map(function ($u) { return User::find($u)->getFullname(); }, $success));
+                }
+
+                if (count($error)) {
+                    PageLayout::postError(dngettext('dozentenrechte',
+                        'Ihr Antrag konnte nicht gespeichert werden.',
+                        sprintf('%s Anträge konnten nicht gespeichert werden.', count($error)),
+                        count($error)),
+                        array_map(function ($u) { return User::find($u)->getFullname(); }, $error));
+                }
+
+                $this->relocate('show/given', 99);
             }
         }
         if ($GLOBALS['perm']->have_perm('root')) {
@@ -325,8 +351,17 @@ class ShowController extends StudipController {
     private function checkRejected() {
         if (Request::submitted('reject')) {
             $right = new Dozentenrecht(Request::get('reject'));
+            $for = $right->for_id;
             if (DozentenrechtePlugin::have_perm('root') || $right->from_id == $GLOBALS['user']->id) {
-                $right->delete();
+                if ($right->delete()) {
+                    PageLayout::postSuccess(
+                        sprintf(dgettext('dozentenrechte', 'Der Antrag für %s wurde gelöscht.'),
+                        User::find($for)->getFullname()));
+                } else {
+                    PageLayout::postSuccess(
+                        sprintf(dgettext('dozentenrechte', 'Der Antrag für %s konnte nicht gelöscht werden.'),
+                        User::find($for)->getFullname()));
+                }
             }
         }
     }
