@@ -17,7 +17,11 @@ class ShowController extends StudipController {
     }
 
     public function index_action($id = '') {
-        Navigation::activateItem('/tools/dozentenrechteplugin/self');
+        if (!$GLOBALS['perm']->have_perm('admin')) {
+            Navigation::activateItem('/tools/dozentenrechteplugin/self');
+        } else {
+            Navigation::activateItem('/tools/dozentenrechteplugin/given', 99);
+        }
 
         if ($id) {
             $dr = Dozentenrecht::find($id);

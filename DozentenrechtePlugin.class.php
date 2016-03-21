@@ -23,6 +23,8 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
             $navigation = new Navigation(dgettext('dozentenrechte', 'Dozentenrechte'));
             if ($this->have_perm('root')) {
                 $navigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
+            } else if ($this->have_perm('admin')) {
+                $navigation->setURL(PluginEngine::GetURL($this, array(), 'show/given/99'));
             } else {
                 $navigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
             }
