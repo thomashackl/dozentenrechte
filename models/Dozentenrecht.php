@@ -77,12 +77,18 @@ class Dozentenrecht extends SimpleORMap {
                 $this->user->getFullname(), $this->user->username, $this->institute->name, $this->getEndMessage());
 
             $ref = Dozentenrecht::find($this->ref_id);
-            $ref->end = $this->end;
-            $ref->status = self::STARTED;
-            $ref->work();
-            $ref->store();
-            $id = $this->ref_id;
-            $this->delete();
+            if ($ref) {
+                $ref->end = $this->end;
+                $ref->status = self::STARTED;
+                $ref->work();
+                $ref->store();
+                $id = $this->ref_id;
+                $this->delete();
+            } else {
+                $this->work();
+                $this->store();
+                $id = $this->id;
+            }
         // New application for rights.
         } else {
             // Send notification to users
