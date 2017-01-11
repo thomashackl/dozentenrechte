@@ -120,12 +120,10 @@ class ShowController extends StudipController {
                     $right->institute_id = $ref->institute->id;
                     $right->ref_id = $ref->id;
                     if ($right->store()) {
+                        $right->verify();
                         PageLayout::postSuccess(dgettext('dozentenrechte', 'Ihr Antrag wurde gespeichert.'));
                     } else {
                         PageLayout::postError(dgettext('dozentenrechte', 'Ihr Antrag konnte nicht gespeichert werden.'));
-                    }
-                    if (DozentenrechtePlugin::have_perm('root')) {
-                        $right->verify();
                     }
                 } else {
                     $users = Request::get('user') ? array(Request::get('user')) : Request::getArray('user');
@@ -164,14 +162,11 @@ class ShowController extends StudipController {
 
                             if ($right->store()) {
                                 $success[] = $user;
+                                $right->verify();
                             } else {
                                 $error[] = $user;
                             }
 
-                            // if a root user puts a request it is automaticly verified
-                            if (DozentenrechtePlugin::have_perm('root')) {
-                                $right->verify();
-                            }
                         }
                     }
                 }
