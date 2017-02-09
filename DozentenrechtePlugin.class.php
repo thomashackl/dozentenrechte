@@ -17,6 +17,9 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
 
     public function __construct() {
         parent::__construct();
+
+        StudipAutoloader::addAutoloadPath(realpath(__DIR__.'/models'));
+
         // Localization
         bindtextdomain('dozentenrechte', __DIR__ . '/locale');
         if ($this->have_perm('dozent')) {
@@ -53,6 +56,9 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
                 $subnavigation = new Navigation(dgettext('dozentenrechte', 'Suche'));
                 $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
                 $navigation->addSubNavigation('search', $subnavigation);
+
+                // Trigger action if two users are merged.
+                NotificationCenter::addObserver($this, 'updateAppliances', 'UserDidMigrate');
             }
 
             Navigation::addItem('tools/dozentenrechteplugin', $navigation);
@@ -110,6 +116,32 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
     public static function check($perm) {
         if (!static::have_perm($perm)) {
             throw new AccessDeniedException;
+        }
+    }
+
+    /**
+     * Update appliances on user merge.
+     * @param $event UserDidMigrate
+     * @param $old_id old user ID
+     * @param $new_id new user ID
+     */
+    public function updateAppliances($event, $old_id, $new_id)
+    {
+        $appliances = Dozentenrecht::findBySQL("`for_id` = :user OR `from_id` = :user ORDER BY `mkdate` DESC",
+            array('user' => $old_id));
+        foreach ($appliances as $a) {
+            try {
+                if ($a->from_id == $old_id) {
+                    $a->from_id = $new_id;
+                } else {
+                    $a->for_id = $new_id;
+                }
+                if (!$a->store()) {
+                    $a->delete();
+                }
+            } catch (Exception $e) {
+                $a->delete();
+            }
         }
     }
 
