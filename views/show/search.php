@@ -6,12 +6,12 @@
     <form method="post">   
         <table class="default">
             <caption>
-                <?= dgettext('dozentenrechte', 'Gestellte Dozentenanträge') ?>
+                <?= dgettext('dozentenrechte', 'Gestellte DozentenantrÃ¤ge') ?>
             </caption>
             <thead>
                 <tr>
                     <th><?= dgettext('dozentenrechte', 'Von') ?></th>
-                    <th><?= dgettext('dozentenrechte', 'Für') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'FÃ¼r') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Einrichtung') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Typ') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Von') ?></th>
@@ -38,7 +38,7 @@
                         <td><?= $right->getStatusMessage() ?></td>
                         <td>
                             <?= !$right->verify 
-                                ? \Studip\Button::create(dgettext('dozentenrechte', 'Antrag löschen'), 'reject', array('value' => $right->id))
+                                ? \Studip\Button::create(dgettext('dozentenrechte', 'Antrag lÃ¶schen'), 'reject', array('value' => $right->id))
                                 : $right->status < Dozentenrecht::FINISHED 
                                     ? \Studip\Button::create(dgettext('dozentenrechte', 'Beenden'), 'end', array('value' => $right->id))
                                     : "" ?>
@@ -49,5 +49,5 @@
         </table>
     </form> 
 <? else: ?>
-    <?= PageLayout::postInfo(dgettext('dozentenrechte', 'Es liegen keine Anträge vor')) ?>
+    <?= PageLayout::postInfo(dgettext('dozentenrechte', 'Es liegen keine AntrÃ¤ge vor')) ?>
 <? endif; ?>

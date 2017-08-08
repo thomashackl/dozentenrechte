@@ -2,18 +2,18 @@
     <form method="post">   
         <table class="default">
             <caption>
-                <?= dgettext('dozentenrechte', 'Gestellte Dozentenanträge') ?>
+                <?= dgettext('dozentenrechte', 'Gestellte DozentenantrÃ¤ge') ?>
             </caption>
             <thead>
                 <tr>
                     <th><?= dgettext('dozentenrechte', 'Gestellt von') ?></th>
-                    <th><?= dgettext('dozentenrechte', 'Für') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'FÃ¼r') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Einrichtung') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Typ') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Von') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Bis') ?></th>
                     <th><?= dgettext('dozentenrechte', 'Antragsdatum') ?></th>
-                    <th><?= dgettext('dozentenrechte', 'Bestätigen') ?></th>
+                    <th><?= dgettext('dozentenrechte', 'BestÃ¤tigen') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -37,12 +37,12 @@
             <tfoot>
                 <tr>
                     <td colspan="0">
-                        <?= \Studip\Button::create(dgettext('dozentenrechte', 'Markierte bestätigen'), 'accept') ?>
+                        <?= \Studip\Button::create(dgettext('dozentenrechte', 'Markierte bestÃ¤tigen'), 'accept') ?>
                     </td>
                 </tr>
             </tfoot>
         </table>
     </form> 
 <? else: ?>
-    <?= dgettext('dozentenrechte', 'Es liegen keine Anträge vor') ?>
+    <?= dgettext('dozentenrechte', 'Es liegen keine AntrÃ¤ge vor') ?>
 <? endif; ?>

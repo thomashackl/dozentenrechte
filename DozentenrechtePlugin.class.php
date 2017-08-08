@@ -33,18 +33,18 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
             }
 
             if ($this->have_perm('root')) {
-                $subnavigation = new Navigation(dgettext('dozentenrechte', 'Anträge bestätigen'));
+                $subnavigation = new Navigation(dgettext('dozentenrechte', 'AntrÃ¤ge bestÃ¤tigen'));
                 $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
                 $navigation->addSubNavigation('accept', $subnavigation);
             }
 
             if (!$GLOBALS['perm']->have_perm('admin')) {
-                $subnavigation = new Navigation(dgettext('dozentenrechte', 'Für mich gestellte Anträge'));
+                $subnavigation = new Navigation(dgettext('dozentenrechte', 'FÃ¼r mich gestellte AntrÃ¤ge'));
                 $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
                 $navigation->addSubNavigation('self', $subnavigation);
             }
 
-            $subnavigation = new Navigation(dgettext('dozentenrechte', 'Von mir gestellte Anträge'));
+            $subnavigation = new Navigation(dgettext('dozentenrechte', 'Von mir gestellte AntrÃ¤ge'));
             $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/given'));
             $navigation->addSubNavigation('given', $subnavigation);
 

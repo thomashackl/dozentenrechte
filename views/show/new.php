@@ -4,7 +4,7 @@
         <b><?= $ref->rights == 'dozent' ? dgettext('dozentenrechte', 'Dozentenrechte') :
             dgettext('dozentenrechte', 'Tutorrechte') ?></b>
         <br/>
-        <?= dgettext('dozentenrechte', 'für') ?>
+        <?= dgettext('dozentenrechte', 'fÃ¼r') ?>
         <br/>
         <b><?= htmlReady($ref->user->getFullname()) ?></b>
         <br/>
@@ -34,7 +34,7 @@
         </section>
         <section>
             <label id="rightsfor">
-                <div><?= dgettext('dozentenrechte', 'für') ?></div>
+                <div><?= dgettext('dozentenrechte', 'fÃ¼r') ?></div>
                 <?php if ($users) : ?>
                     <ul id="rights_added_users">
                     <?php foreach ($users as $u) : ?>
@@ -53,7 +53,7 @@
                 <?= dgettext('dozentenrechte', 'an der Einrichtung') ?>
                 <?php if (count($institutes) > 0) : ?>
                 <select name="inst">
-                    <option value="">-- <?= dgettext('dozentenrechte', 'bitte auswählen') ?> --</option>
+                    <option value="">-- <?= dgettext('dozentenrechte', 'bitte auswÃ¤hlen') ?> --</option>
                     <?php foreach ($institutes as $i) : ?>
                         <option value="<?= $i['Institut_id'] ?>"<?= $inst == $i['Institut_id'] ? ' selected="selected"' : '' ?>>
                             <?= ($GLOBALS['perm']->have_perm('admin') ?
@@ -84,7 +84,7 @@
     </fieldset>
 <?php endif ?>
     <fieldset>
-        <legend><?= $ref ? dgettext('dozentenrechte', 'Verlängern bis') : dgettext('dozentenrechte', 'Bis') ?></legend>
+        <legend><?= $ref ? dgettext('dozentenrechte', 'VerlÃ¤ngern bis') : dgettext('dozentenrechte', 'Bis') ?></legend>
         <section>
             <label>
                 <input type="radio" name="to_type" value="0"<?= $to ? '' : ' checked="checked"' ?>>

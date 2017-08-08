@@ -1,8 +1,8 @@
 pluginname=Dozentenrechte
 pluginclassname=DozentenrechtePlugin
 origin=intelec
-version=1.1
-description=Automatische Antr‰ge von Dozenten
-studipMinVersion=3.1
+version=1.2
+description=Automatische Antr√§ge von Dozenten
+studipMinVersion=4.0
 dbscheme=db/install.sql
 uninstalldbscheme=db/uninstall.sql

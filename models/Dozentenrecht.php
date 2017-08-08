@@ -53,9 +53,9 @@ class Dozentenrecht extends SimpleORMap {
         }
         switch ($this->status) {
             case self::NOT_STARTED:
-                return dgettext('dozentenrechte', 'Bestätigt');
+                return dgettext('dozentenrechte', 'BestÃ¤tigt');
             case self::STARTED:
-                return dgettext('dozentenrechte', 'Läuft');
+                return dgettext('dozentenrechte', 'LÃ¤uft');
             case self::NOTIFIED:
                 return dgettext('dozentenrechte', 'Auslaufend');
             case self::FINISHED:
@@ -70,10 +70,10 @@ class Dozentenrecht extends SimpleORMap {
         if ($this->ref_id) {
             // Send notification to users
             $for_message = sprintf(dgettext('dozentenrechte',
-                'Ihre erweiterten Rechte an der Einrichtung %s wurden verlängert.'),
+                'Ihre erweiterten Rechte an der Einrichtung %s wurden verlÃ¤ngert.'),
                 $this->institute->name);
             $by_message = sprintf(dgettext('dozentenrechte',
-                'Ihr Antrag auf Verlängerung der erweiterten Rechte von %s (%s) an der Einrichtung %s bis %s wurde soeben bestätigt.'),
+                'Ihr Antrag auf VerlÃ¤ngerung der erweiterten Rechte von %s (%s) an der Einrichtung %s bis %s wurde soeben bestÃ¤tigt.'),
                 $this->user->getFullname(), $this->user->username, $this->institute->name, $this->getEndMessage());
 
             $ref = Dozentenrecht::find($this->ref_id);
@@ -93,10 +93,10 @@ class Dozentenrecht extends SimpleORMap {
         } else {
             // Send notification to users
             $for_message = sprintf(dgettext('dozentenrechte',
-                'Ihr Antrag auf erweiterte Rechte an der Einrichtung %s wurde bestätigt.'),
+                'Ihr Antrag auf erweiterte Rechte an der Einrichtung %s wurde bestÃ¤tigt.'),
                 $this->institute->name);
             $by_message = sprintf(dgettext('dozentenrechte',
-                'Ihr Antrag auf erweiterte Rechte für %s (%s) an der Einrichtung %s von %s bis %s wurde soeben bestätigt.'),
+                'Ihr Antrag auf erweiterte Rechte fÃ¼r %s (%s) an der Einrichtung %s von %s bis %s wurde soeben bestÃ¤tigt.'),
                 $this->user->getFullname(), $this->user->username, $this->institute->name, $this->getBeginMessage(), $this->getEndMessage());
             // Check if they need to be activated
             $this->work();
@@ -172,7 +172,7 @@ class Dozentenrecht extends SimpleORMap {
 
             // message for the expiring user
             $message = sprintf(dgettext('dozentenrechte',
-                'Ihr Antrag auf erweiterte Rechte an der Einrichtung %s endet in Kürze.'),
+                'Ihr Antrag auf erweiterte Rechte an der Einrichtung %s endet in KÃ¼rze.'),
                 $this->institute->name);
             PersonalNotifications::add($this->for_id,
                 PluginEngine::GetURL('dozentenrechteplugin',
@@ -181,7 +181,7 @@ class Dozentenrecht extends SimpleORMap {
 
             // message for the user that gave the request for the expiring user
             $message = sprintf(dgettext('dozentenrechte',
-                'Ein von Ihnen gestellter Antrag auf erweiterte Rechte für %s (%s) an der Einrichtung %s endet in Kürze.'),
+                'Ein von Ihnen gestellter Antrag auf erweiterte Rechte fÃ¼r %s (%s) an der Einrichtung %s endet in KÃ¼rze.'),
                 $this->user->getFullname(), $this->user->username, $this->institute->name);
             PersonalNotifications::add($this->from_id,
                 PluginEngine::GetURL('dozentenrechteplugin',

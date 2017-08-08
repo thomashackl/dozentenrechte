@@ -2,7 +2,7 @@
     <form method="post">   
         <table class="default">
             <caption>
-                <?= dgettext('dozentenrechte', 'Gestellte Dozentenanträge') ?>
+                <?= dgettext('dozentenrechte', 'Gestellte DozentenantrÃ¤ge') ?>
             </caption>
             <thead>
                 <tr>

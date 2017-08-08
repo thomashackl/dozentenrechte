@@ -8,9 +8,8 @@ class ShowController extends StudipController {
         $this->flash = Trails_Flash::instance();
         if (Request::isXhr()) {
             $this->set_layout(null);
-            $this->response->add_header('Content-Type', 'text/html;charset=windows-1252');
         } else {
-            $this->set_layout($GLOBALS['template_factory']->open('layouts/base_without_infobox'));
+            $this->set_layout($GLOBALS['template_factory']->open('layouts/base'));
         }
         $this->sidebar = Sidebar::get();
         $this->sidebar->setImage('sidebar/person-sidebar.png');
@@ -29,7 +28,7 @@ class ShowController extends StudipController {
             if ($dr && (DozentenrechtePlugin::have_perm('root') || $GLOBALS['user']->id == $dr->for_id)) {
 
                 $vw = new ViewsWidget();
-                $vw->addLink(dgettext('dozentenrechte', 'Alle für mich gestellten Anträge anzeigen'), $this->url_for('show/index'))
+                $vw->addLink(dgettext('dozentenrechte', 'Alle fÃ¼r mich gestellten AntrÃ¤ge anzeigen'), $this->url_for('show/index'))
                     ->setActive($id ? false : true);
                 $vw->addLink(dgettext('dozentenrechte', 'Einzelnen Antrag anzeigen'), $this->url_for('show/index', $id))
                     ->setActive($id ? true : false);
@@ -39,7 +38,7 @@ class ShowController extends StudipController {
             } else {
                 PageLayout::postError(dgettext('dozentenrechte',
                     'Der angegebene Eintrag wurde nicht gefunden, oder Sie '.
-                    'haben nicht die nötigen Rechte, um darauf zuzugreifen.'));
+                    'haben nicht die nÃ¶tigen Rechte, um darauf zuzugreifen.'));
                 $this->relocate('show');
             }
         } else {
@@ -53,7 +52,7 @@ class ShowController extends StudipController {
         PageLayout::addScript($this->dispatcher->plugin->getPluginURL() . '/assets/application.js');
 
         if (Request::isXhr()) {
-            $this->response->add_header('X-Title', dgettext('dozentenrechte', 'Rechte verlängern'));
+            $this->response->add_header('X-Title', dgettext('dozentenrechte', 'Rechte verlÃ¤ngern'));
         }
 
         if ($ref_id) {
@@ -107,7 +106,7 @@ class ShowController extends StudipController {
 
             if ($errorStack) {
                 PageLayout::postError(dgettext('dozentenrechte',
-                    'Bitte überprüfen sie ihren Antrag:'), $errorStack);
+                    'Bitte Ã¼berprÃ¼fen sie ihren Antrag:'), $errorStack);
             } else {
                 // set rights
                 if ($ref_id) {
@@ -174,7 +173,7 @@ class ShowController extends StudipController {
                 if (count($success)) {
                     PageLayout::postSuccess(dngettext('dozentenrechte',
                         'Ihr Antrag wurde gespeichert.',
-                        sprintf('%s Anträge wurden gespeichert.', count($success)),
+                        sprintf('%s AntrÃ¤ge wurden gespeichert.', count($success)),
                         count($success)),
                     array_map(function ($u) { return User::find($u)->getFullname(); }, $success));
                 }
@@ -182,7 +181,7 @@ class ShowController extends StudipController {
                 if (count($error)) {
                     PageLayout::postError(dngettext('dozentenrechte',
                         'Ihr Antrag konnte nicht gespeichert werden.',
-                        sprintf('%s Anträge konnten nicht gespeichert werden.', count($error)),
+                        sprintf('%s AntrÃ¤ge konnten nicht gespeichert werden.', count($error)),
                         count($error)),
                         array_map(function ($u) { return User::find($u)->getFullname(); }, $error));
                 }
@@ -206,17 +205,17 @@ class ShowController extends StudipController {
         $this->to_type = Request::int('to_type', 0);
         $this->to = Request::get('to', '');
 
-        $userSearch = new PermissionSearch('user', 'Person hinzufügen', 'user_id',
+        $userSearch = new PermissionSearch('user', 'Person hinzufÃ¼gen', 'user_id',
             array(
                 'permission' => array('user', 'autor', 'tutor', 'dozent'),
                 'exclude_user' => array()
             ));
         $this->mps = MultiPersonSearch::get('add_dozentenrecht_' . $GLOBALS['user']->id)
-            ->setTitle(dgettext('dozentenrechte', 'Personen hinzufügen'))
+            ->setTitle(dgettext('dozentenrechte', 'Personen hinzufÃ¼gen'))
             ->setSearchObject($userSearch)
             ->setDefaultSelectedUser(array_map(function ($u) { return $u->id; }, $this->users))
             ->setExecuteURL($this->url_for('show/multipersonsearch'))
-            ->setLinkText(dgettext('dozentenrechte', 'Person(en) hinzufügen'))
+            ->setLinkText(dgettext('dozentenrechte', 'Person(en) hinzufÃ¼gen'))
             ->setJSFunctionOnSubmit('STUDIP.Dozentenrechte.addPersons');
         // Build quick selections.
         if (count($this->institutes) > 0 && count($this->institutes) <= 4) {
@@ -244,7 +243,7 @@ class ShowController extends StudipController {
         Navigation::activateItem('/tools/dozentenrechteplugin/given');
 
         $vw = new ViewsWidget();
-        $vw->addLink(dgettext('dozentenrechte', 'Nur offene Anträge anzeigen'), $this->url_for('show/given', Dozentenrecht::NOT_STARTED))
+        $vw->addLink(dgettext('dozentenrechte', 'Nur offene AntrÃ¤ge anzeigen'), $this->url_for('show/given', Dozentenrecht::NOT_STARTED))
             ->setActive(!$id && $status == Dozentenrecht::NOT_STARTED);
         $vw->addLink(dgettext('dozentenrechte', 'Nur auslaufende Rechte anzeigen'), $this->url_for('show/given', Dozentenrecht::NOTIFIED))
             ->setActive(!$id && $status == Dozentenrecht::NOTIFIED);
@@ -252,7 +251,7 @@ class ShowController extends StudipController {
             ->setActive(!$id && $status == Dozentenrecht::STARTED);
         $vw->addLink(dgettext('dozentenrechte', 'Nur abgelaufene Rechte anzeigen'), $this->url_for('show/given', Dozentenrecht::FINISHED))
             ->setActive(!$id && $status == Dozentenrecht::FINISHED);
-        $vw->addLink(dgettext('dozentenrechte', 'Alle meine Anträge anzeigen'), $this->url_for('show/given', 99))
+        $vw->addLink(dgettext('dozentenrechte', 'Alle meine AntrÃ¤ge anzeigen'), $this->url_for('show/given', 99))
             ->setActive(!$id && $status == 99);
 
         // Single ID given, load only this one right.
@@ -267,7 +266,7 @@ class ShowController extends StudipController {
             } else {
                 PageLayout::postError(dgettext('dozentenrechte',
                     'Der angegebene Eintrag wurde nicht gefunden, oder Sie '.
-                    'haben nicht die nötigen Rechte, um darauf zuzugreifen.'));
+                    'haben nicht die nÃ¶tigen Rechte, um darauf zuzugreifen.'));
                 $this->relocate('show/given');
             }
         // Show all rights (filtered by given status)
@@ -354,11 +353,11 @@ class ShowController extends StudipController {
             if (DozentenrechtePlugin::have_perm('root') || $right->from_id == $GLOBALS['user']->id) {
                 if ($right->delete()) {
                     PageLayout::postSuccess(
-                        sprintf(dgettext('dozentenrechte', 'Der Antrag für %s wurde gelöscht.'),
+                        sprintf(dgettext('dozentenrechte', 'Der Antrag fÃ¼r %s wurde gelÃ¶scht.'),
                         User::find($for)->getFullname()));
                 } else {
                     PageLayout::postSuccess(
-                        sprintf(dgettext('dozentenrechte', 'Der Antrag für %s konnte nicht gelöscht werden.'),
+                        sprintf(dgettext('dozentenrechte', 'Der Antrag fÃ¼r %s konnte nicht gelÃ¶scht werden.'),
                         User::find($for)->getFullname()));
                 }
             }
