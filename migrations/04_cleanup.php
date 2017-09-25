@@ -1,6 +1,6 @@
 <?php
 
-class Cleanup extends DBMigration {
+class Cleanup extends Migration {
 
     function up() {
 

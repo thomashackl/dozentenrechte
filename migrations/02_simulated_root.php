@@ -1,6 +1,6 @@
 <?php
 
-class SimulatedRoot extends DBMigration {
+class SimulatedRoot extends Migration {
 
     function up() {
         $role = new Role();

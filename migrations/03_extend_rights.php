@@ -1,6 +1,6 @@
 <?php
 
-class ExtendRights extends DBMigration {
+class ExtendRights extends Migration {
 
     function up() {
         DBManager::get()->exec("ALTER TABLE `dozentenrechte` ADD `ref_id` INT NULL DEFAULT NULL REFERENCES `id` AFTER `status`");
