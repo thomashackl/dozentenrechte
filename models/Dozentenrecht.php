@@ -135,10 +135,9 @@ class Dozentenrecht extends SimpleORMap {
 
     private function grant() {
         if ($this->user->id && $this->user->username && $this->user->visible != 'never') {
-            $um = new UserManagement($this->user->id);
-            $um->changeUser(array('auth_user_md5.perms' => 'dozent'));
-            $um->changeUser(array('auth_user_md5.visible' => 'yes'));
-            $um->storeToDatabase();
+            $this->user->perms = 'dozent';
+            $this->user->visible = 'yes';
+            $this->user->store();
             $instMember = InstituteMember::find(array($this->for_id, $this->institute_id));
             if (!$instMember) {
                 $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
