@@ -133,7 +133,7 @@ class Dozentenrecht extends SimpleORMap {
         }
     }
 
-    private function grant() {
+    public function grant() {
         if ($this->user->id && $this->user->username && $this->user->visible != 'never') {
             $this->user->perms = 'dozent';
             $this->user->visible = 'yes';
