@@ -145,4 +145,76 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
         }
     }
 
+    /*
+     * Returns the tables containing user data.
+     * the array consists of the tables containing user data
+     * the expected format for each table is:
+     * $array[ table display name ] = [ 'table_name' => name of the table, 'table_content' => array of db rows containing userdata]
+     * @param string $user_id
+     * @return array
+     */
+    public static function getUserdataInformation($user_id)
+    {
+
+        $data = [];
+
+        $for_me = DBManager::get()->fetchAll("SELECT
+                        IFNULL(i.`Name`, d.`institute_id`) AS institute,
+                        FROM_UNIXTIME(d.`begin`, '%Y-%m-%d %H:%i') AS begin,
+                        FROM_UNIXTIME(d.`end`, '%Y-%m-%d %H:%i') AS end,
+                        d.`status`,
+                        d.`rights`,
+                        FROM_UNIXTIME(d.`mkdate`, '%Y-%m-%d %H:%i') AS mkdate,
+                        FROM_UNIXTIME(d.`chdate`, '%Y-%m-%d %H:%i') AS chdate
+                    FROM `dozentenrechte` d
+                        LEFT JOIN `Institute` i ON (i.`Institut_id` = d.`institute_id`)
+                    WHERE d.`for_id` = ?
+                    ORDER BY d.`chdate`", [$user_id]);
+
+        if (count($for_me) > 0) {
+            $data['Für mich gestellte Dozentenrechtsanträge'] =
+                ['table_name' => 'dozentenrechte', 'table_content' => $for_me];
+        }
+
+        $by_me = DBManager::get()->fetchAll("SELECT
+                        IFNULL(i.`Name`, d.`institute_id`) AS institute,
+                        FROM_UNIXTIME(d.`begin`, '%Y-%m-%d %H:%i') AS begin,
+                        FROM_UNIXTIME(d.`end`, '%Y-%m-%d %H:%i') AS end,
+                        d.`status`,
+                        d.`rights`,
+                        FROM_UNIXTIME(d.`mkdate`, '%Y-%m-%d %H:%i') AS mkdate,
+                        FROM_UNIXTIME(d.`chdate`, '%Y-%m-%d %H:%i') AS chdate
+                    FROM `dozentenrechte` d
+                        LEFT JOIN `Institute` i ON (i.`Institut_id` = d.`institute_id`)
+                    WHERE d.`from_id` = ?
+                    ORDER BY d.`chdate`", [$user_id]);
+
+        if (count($by_me) > 0) {
+            $data['Von mir gestellte Dozentenrechtsanträge'] =
+                ['table_name' => 'dozentenrechte', 'table_content' => $by_me];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns the filerefs of given user.
+     * @param string $user_id
+     * @return array
+     */
+    public static function getUserFileRefs($user_id)
+    {
+        return [];
+    }
+
+    /**
+     * Deletes the table content containing user data.
+     * @param string $user_id
+     * @return boolean
+     */
+    public static function deleteUserdata($user_id)
+    {
+        return false;
+    }
+
 }
