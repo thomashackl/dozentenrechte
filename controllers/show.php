@@ -115,7 +115,7 @@ class ShowController extends StudipController {
                     $right->from_id = $GLOBALS['user']->id;
                     $right->for_id = $ref->user->id;
                     $right->begin = $ref->begin;
-                    $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
+                    $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : Dozentenrecht::INFINITY;
                     $right->institute_id = $ref->institute->id;
                     $right->ref_id = $ref->id;
                     if ($right->store()) {
@@ -144,7 +144,7 @@ class ShowController extends StudipController {
                                     'for' => $user,
                                     'inst' => Request::option('inst'),
                                     'start' => Request::get('from_type') ? strtotime(Request::get('from')) : 0,
-                                    'end' => Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX
+                                    'end' => Request::get('to_type') ? strtotime(Request::get('to')) : Dozentenrecht::INFINITY
                                 ));
 
                             $right = new Dozentenrecht();
@@ -152,7 +152,7 @@ class ShowController extends StudipController {
                             $right->from_id = $GLOBALS['user']->id;
                             $right->for_id = $user;
                             $right->begin = Request::get('from_type') ? strtotime(Request::get('from')) : 0;
-                            $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : PHP_INT_MAX;
+                            $right->end = Request::get('to_type') ? strtotime(Request::get('to')) : Dozentenrecht::INFINITY;
                             $right->institute_id = Request::get('inst');
 
                             if ($existing) {
