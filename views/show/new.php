@@ -99,7 +99,7 @@
     </fieldset>
     <footer>
         <?= CSRFProtection::tokenTag() ?>
-        <?= \Studip\Button::createAccept(dgettext('dozentenrechte', 'Antrag stellen'), 'save', array('data-dialog-button' => true)) ?>
+        <?= \Studip\Button::createAccept(dgettext('dozentenrechte', 'Antrag stellen'), 'save', ['data-dialog-button' => true]) ?>
     </footer>
 </form>
 <script type="text/javascript">

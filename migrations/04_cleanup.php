@@ -22,7 +22,7 @@ class Cleanup extends Migration {
                     AND `institute_id` = :inst
                     AND `verify` = 1
                     AND `status` < 3",
-                array('from' => $d['from_id'], 'for' => $d['for_id'], 'inst' => $d['institute_id']));
+                ['from' => $d['from_id'], 'for' => $d['for_id'], 'inst' => $d['institute_id']]);
             $minStart = 0;
             $maxEnd = 0;
             $firstId = 0;
@@ -37,12 +37,12 @@ class Cleanup extends Migration {
 
             // Update first found entry with new min and max times.
             DBManager::get()->execute("UPDATE `dozentenrechte` SET `begin` = :begin, `end` = :end WHERE `id` = :id",
-                array('begin' => $minStart, 'end' => $maxEnd, 'id' => $firstId));
+                ['begin' => $minStart, 'end' => $maxEnd, 'id' => $firstId]);
 
             // Delete all other entries for given person at given institute.
             DBManager::get()->execute("DELETE FROM `dozentenrechte`
                 WHERE `from_id` = :from AND `for_id` = :for AND `institute_id` = :inst AND `id` != :id",
-                array('from' => $d['from_id'], 'for' => $d['for_id'], 'inst' => $d['institute_id'], 'id' => $firstId));
+                ['from' => $d['from_id'], 'for' => $d['for_id'], 'inst' => $d['institute_id'], 'id' => $firstId]);
         }
     }
 

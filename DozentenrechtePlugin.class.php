@@ -25,36 +25,36 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
         if ($this->have_perm('dozent')) {
             $navigation = new Navigation(dgettext('dozentenrechte', 'Dozentenrechte'));
             if ($this->have_perm('root')) {
-                $navigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
+                $navigation->setURL(PluginEngine::GetURL($this, [], 'show/accept'));
             } else if ($this->have_perm('admin')) {
-                $navigation->setURL(PluginEngine::GetURL($this, array(), 'show/given/99'));
+                $navigation->setURL(PluginEngine::GetURL($this, [], 'show/given/99'));
             } else {
-                $navigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
+                $navigation->setURL(PluginEngine::GetURL($this, [], 'show'));
             }
 
             if ($this->have_perm('root')) {
                 $subnavigation = new Navigation(dgettext('dozentenrechte', 'Anträge bestätigen'));
-                $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/accept'));
+                $subnavigation->setURL(PluginEngine::GetURL($this, [], 'show/accept'));
                 $navigation->addSubNavigation('accept', $subnavigation);
             }
 
             if (!$GLOBALS['perm']->have_perm('admin')) {
                 $subnavigation = new Navigation(dgettext('dozentenrechte', 'Für mich gestellte Anträge'));
-                $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show'));
+                $subnavigation->setURL(PluginEngine::GetURL($this, [], 'show'));
                 $navigation->addSubNavigation('self', $subnavigation);
             }
 
             $subnavigation = new Navigation(dgettext('dozentenrechte', 'Von mir gestellte Anträge'));
-            $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/given'));
+            $subnavigation->setURL(PluginEngine::GetURL($this, [], 'show/given'));
             $navigation->addSubNavigation('given', $subnavigation);
 
             $subnavigation = new Navigation(dgettext('dozentenrechte', 'Neuer Antrag'));
-            $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/new'));
+            $subnavigation->setURL(PluginEngine::GetURL($this, [], 'show/new'));
             $navigation->addSubNavigation('new', $subnavigation);
 
             if ($this->have_perm('root')) {
                 $subnavigation = new Navigation(dgettext('dozentenrechte', 'Suche'));
-                $subnavigation->setURL(PluginEngine::GetURL($this, array(), 'show/search'));
+                $subnavigation->setURL(PluginEngine::GetURL($this, [], 'show/search'));
                 $navigation->addSubNavigation('search', $subnavigation);
 
                 // Trigger action if two users are merged.
@@ -73,7 +73,7 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
     public function perform($unconsumed_path) {
         $this->setupAutoload();
         $dispatcher = new Trails_Dispatcher(
-                $this->getPluginPath(), rtrim(PluginEngine::getLink($this, array(), null), '/'), 'show'
+                $this->getPluginPath(), rtrim(PluginEngine::getLink($this, [], null), '/'), 'show'
         );
         $dispatcher->plugin = $this;
         $dispatcher->dispatch($unconsumed_path);
@@ -128,7 +128,7 @@ class DozentenrechtePlugin extends StudIPPlugin implements SystemPlugin {
     public function updateAppliances($event, $old_id, $new_id)
     {
         $appliances = Dozentenrecht::findBySQL("`for_id` = :user OR `from_id` = :user ORDER BY `mkdate` DESC",
-            array('user' => $old_id));
+            ['user' => $old_id]);
         foreach ($appliances as $a) {
             try {
                 if ($a->from_id == $old_id) {

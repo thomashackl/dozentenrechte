@@ -21,25 +21,25 @@ class Dozentenrecht extends SimpleORMap {
     const TIME_TO_NOTIFY = 604800;
     const INFINITY = 2147483647;
     
-    public static function configure($config = array()) {
+    public static function configure($config = []) {
         $config['db_table'] = 'dozentenrechte';
-        $config['belongs_to']['user'] = array(
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'for_id'
-        );
-        $config['belongs_to']['owner'] = array(
+        ];
+        $config['belongs_to']['owner'] = [
             'class_name' => 'User',
             'foreign_key' => 'from_id'
-        );
-        $config['belongs_to']['institute'] = array(
+        ];
+        $config['belongs_to']['institute'] = [
             'class_name' => 'Institute',
             'foreign_key' => 'institute_id'
-        );
+        ];
         parent::configure($config);
     }
 
     public static function getUnfinished() {
-        return SimpleORMapCollection::createFromArray(self::findBySQL('status < ?', array(self::FINISHED)));
+        return SimpleORMapCollection::createFromArray(self::findBySQL('status < ?', [self::FINISHED]));
     }
     
     public static function update() {
@@ -103,8 +103,8 @@ class Dozentenrecht extends SimpleORMap {
             $this->store();
             $id = $this->id;
         }
-        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/index/'.$id), $for_message, '', Icon::create('roles2', 'clickable'));
-        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', array(), 'show/given/1/'.$id), $by_message, '', Icon::create('roles2', 'clickable'));
+        PersonalNotifications::add($this->for_id, PluginEngine::GetURL('dozentenrechteplugin', [], 'show/index/'.$id), $for_message, '', Icon::create('roles2', 'clickable'));
+        PersonalNotifications::add($this->from_id, PluginEngine::GetURL('dozentenrechteplugin', [], 'show/given/1/'.$id), $by_message, '', Icon::create('roles2', 'clickable'));
 
     }
     
@@ -138,9 +138,9 @@ class Dozentenrecht extends SimpleORMap {
             $this->user->perms = 'dozent';
             $this->user->visible = 'yes';
             $this->user->store();
-            $instMember = InstituteMember::find(array($this->for_id, $this->institute_id));
+            $instMember = InstituteMember::find([$this->for_id, $this->institute_id]);
             if (!$instMember) {
-                $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
+                $instMember = new InstituteMember([$this->for_id, $this->institute_id]);
             }
             $instMember->inst_perms = 'dozent';
             $instMember->store();
@@ -151,13 +151,13 @@ class Dozentenrecht extends SimpleORMap {
 
     public function revoke() {
         if ($this->isLongestRunning()) {
-            if (InstituteMember::exists(array($this->for_id, $this->institute_id))) {
-                $instMember = new InstituteMember(array($this->for_id, $this->institute_id));
+            if (InstituteMember::exists([$this->for_id, $this->institute_id])) {
+                $instMember = new InstituteMember([$this->for_id, $this->institute_id]);
                 $instMember->inst_perms = 'autor';
                 $instMember->store();
             }
-            if (!InstituteMember::countBySql('user_id = ? AND inst_perms = ?', array($this->for_id, 'dozent'))
-                    && !CourseMember::countBySql('user_id = ? AND status = ?', array($this->for_id, 'dozent'))) {
+            if (!InstituteMember::countBySql('user_id = ? AND inst_perms = ?', [$this->for_id, 'dozent'])
+                    && !CourseMember::countBySql('user_id = ? AND status = ?', [$this->for_id, 'dozent'])) {
                 $this->user->perms = 'autor';
                 $this->user->store();
             }
@@ -175,7 +175,7 @@ class Dozentenrecht extends SimpleORMap {
                 $this->institute->name);
             PersonalNotifications::add($this->for_id,
                 PluginEngine::GetURL('dozentenrechteplugin',
-                array(), 'show/index/'.$this->id), $message, '',
+                [], 'show/index/'.$this->id), $message, '',
                 Icon::create('roles2', 'clickable'));
 
             // message for the user that gave the request for the expiring user
@@ -184,7 +184,7 @@ class Dozentenrecht extends SimpleORMap {
                 $this->user->getFullname(), $this->user->username, $this->institute->name);
             PersonalNotifications::add($this->from_id,
                 PluginEngine::GetURL('dozentenrechteplugin',
-                array(), 'show/given/1/'.$this->id), $message, '',
+                [], 'show/given/1/'.$this->id), $message, '',
                 Icon::create('roles2', 'clickable'));
 
             $this->status = self::NOTIFIED;
@@ -193,7 +193,7 @@ class Dozentenrecht extends SimpleORMap {
     }
 
     private function isLongestRunning() {
-        return !self::countBySql('for_id = ? AND end > ? AND status = ?', array($this->for_id, $this->end, self::STARTED));
+        return !self::countBySql('for_id = ? AND end > ? AND status = ?', [$this->for_id, $this->end, self::STARTED]);
     }
 
 }

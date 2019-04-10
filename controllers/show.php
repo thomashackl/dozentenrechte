@@ -33,7 +33,7 @@ class ShowController extends StudipController {
                 $vw->addLink(dgettext('dozentenrechte', 'Einzelnen Antrag anzeigen'), $this->url_for('show/index', $id))
                     ->setActive($id ? true : false);
 
-                $this->rights = SimpleCollection::createFromArray(array($dr));
+                $this->rights = SimpleCollection::createFromArray([$dr]);
             // No access.
             } else {
                 PageLayout::postError(dgettext('dozentenrechte',
@@ -125,9 +125,9 @@ class ShowController extends StudipController {
                         PageLayout::postError(dgettext('dozentenrechte', 'Ihr Antrag konnte nicht gespeichert werden.'));
                     }
                 } else {
-                    $users = Request::get('user') ? array(Request::get('user')) : Request::getArray('user');
-                    $success = array();
-                    $error = array();
+                    $users = Request::get('user') ? [Request::get('user')] : Request::getArray('user');
+                    $success = [];
+                    $error = [];
                     foreach ($users as $user) {
                         if ($user) {
                             /*
@@ -139,13 +139,13 @@ class ShowController extends StudipController {
                                     AND `institute_id` = :inst
                                     AND (`begin` BETWEEN :start AND :end
                                         OR `end` BETWEEN :start AND :end)",
-                                array(
+                                [
                                     'by' => $GLOBALS['user']->id,
                                     'for' => $user,
                                     'inst' => Request::option('inst'),
                                     'start' => Request::get('from_type') ? strtotime(Request::get('from')) : 0,
                                     'end' => Request::get('to_type') ? strtotime(Request::get('to')) : Dozentenrecht::INFINITY
-                                ));
+                                ]);
 
                             $right = new Dozentenrecht();
                             $right->rights = Request::get('rights');
@@ -190,26 +190,26 @@ class ShowController extends StudipController {
             }
         }
         if ($GLOBALS['perm']->have_perm('root')) {
-            $this->institutes = array();
+            $this->institutes = [];
         } else {
             $this->institutes = array_filter(Institute::getMyInstitutes(), function($i) {
-                return in_array($i['inst_perms'], array('dozent', 'admin'));
+                return in_array($i['inst_perms'], ['dozent', 'admin']);
             });
         }
 
         $this->right = Request::option('right', 'dozent');
         $this->inst = Request::option('inst', '');
-        $this->users = User::findMany(Request::optionArray('user', array()));
+        $this->users = User::findMany(Request::optionArray('user', []));
         $this->from_type = Request::int('from_type', 0);
         $this->from = Request::get('from', '');
         $this->to_type = Request::int('to_type', 0);
         $this->to = Request::get('to', '');
 
         $userSearch = new PermissionSearch('user', 'Person hinzufügen', 'user_id',
-            array(
-                'permission' => array('user', 'autor', 'tutor', 'dozent'),
-                'exclude_user' => array()
-            ));
+            [
+                'permission' => ['user', 'autor', 'tutor', 'dozent'],
+                'exclude_user' => []
+            ]);
         $this->mps = MultiPersonSearch::get('add_dozentenrecht_' . $GLOBALS['user']->id)
             ->setTitle(dgettext('dozentenrechte', 'Personen hinzufügen'))
             ->setSearchObject($userSearch)
@@ -223,7 +223,7 @@ class ShowController extends StudipController {
                 $members = array_map(
                     function ($m) { return $m->user_id; },
                     array_filter(
-                        InstituteMember::findByInstituteAndStatus($i['Institut_id'], array('autor', 'tutor', 'dozent')),
+                        InstituteMember::findByInstituteAndStatus($i['Institut_id'], ['autor', 'tutor', 'dozent']),
                         function ($m) { return $m->user_id != $GLOBALS['user']->id; }
                     )
                 );
@@ -258,8 +258,8 @@ class ShowController extends StudipController {
         if ($id) {
             $dr = Dozentenrecht::find($id);
             // Check if application may be seen by current user.
-            if ($dr && (DozentenrechtePlugin::have_perm('root') || in_array($GLOBALS['user']->id, array($dr->from_id, $dr->for_id)))) {
-                $this->rights = SimpleCollection::createFromArray(array($dr));
+            if ($dr && (DozentenrechtePlugin::have_perm('root') || in_array($GLOBALS['user']->id, [$dr->from_id, $dr->for_id]))) {
+                $this->rights = SimpleCollection::createFromArray([$dr]);
                 $vw->addLink(dgettext('dozentenrechte', 'Einzelnen Antrag anzeigen'), $this->url_for('show/given', $id))
                     ->setActive($id ? true : false);
             // No access.
@@ -334,7 +334,7 @@ class ShowController extends StudipController {
         $args = func_get_args();
 
         # find params
-        $params = array();
+        $params = [];
         if (is_array(end($args))) {
             $params = array_pop($args);
         }
